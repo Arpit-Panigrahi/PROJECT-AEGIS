@@ -1,0 +1,29 @@
+# Project Aegis - .gitignore
+
+# Build Artifacts & Binaries
+bin/
+*.o
+*.skel.h
+
+# Python cache & virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+
+# Temporary testbed & evaluation data
+testbed/corpus_root/
+/tmp/
+*.log
+
+# Editor & OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# System-generated metadata
+.system_generated/
