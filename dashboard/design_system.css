@@ -2010,7 +2010,7 @@ tbody tr:hover td {
 
 
 /* =============================================================================
-   14. EXECUTIVE PRESENTATION WALKTHROUGH SUITE (THEATER & DOCKED HUD MODES)
+   14. SYSTEM ARCHITECTURE BRIEFING SUITE (DOSSIER & HUD MODES)
    ============================================================================= */
 
 /* Theater Mode: Full Briefing Overlay */
@@ -2260,7 +2260,7 @@ tbody tr:hover td {
   line-height: 1.4;
 }
 
-/* Executive Pitch / Speaker Script Box */
+/* Technical Architecture & Subsystem Analysis Box */
 .script-box {
   background: rgba(253, 255, 240, 0.03);
   border: 1px solid rgba(253, 255, 240, 0.16);
@@ -2304,7 +2304,7 @@ tbody tr:hover td {
   text-transform: none;
 }
 
-/* 3 Bullet Takeaways for Evaluators */
+/* Core Architectural Guarantees & Specifications */
 .takeaways-container {
   display: flex;
   flex-direction: column;

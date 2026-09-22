@@ -50,12 +50,12 @@
                     <strong id="modeDisplay" class="nav-mode-pill__val">Monitor</strong>
                 </button>
 
-                <!-- Architecture Review & Evaluation Walkthrough -->
-                <button id="tourBtn" class="btn btn--primary nav-tour-btn" onclick="togglePresenterTour()" title="Architecture Review Walkthrough (Shortcut: P)" aria-label="Guided Presentation Mode and Architecture Walkthrough">
+                <!-- Architecture Review & Subsystem Walkthrough -->
+                <button id="tourBtn" class="btn btn--primary nav-tour-btn" onclick="togglePresenterTour()" title="Architecture Briefing & Subsystem Walkthrough (Shortcut: P)" aria-label="Architecture Briefing and Subsystem Walkthrough">
                     <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
                         <polygon points="5 3 19 12 5 21 5 3"/>
                     </svg>
-                    <span>Presentation Mode</span>
+                    <span>Architecture Briefing</span>
                 </button>
 
                 <!-- Sentinel Power Toggle Button -->
@@ -539,8 +539,8 @@ events         : RINGBUF (2 MB memory ring)</div>
         </section>
     </main>
 
-    <!-- Architecture Review & Executive Presentation Suite -->
-    <div id="presenterDrawer" class="presenter-drawer mode-theater" style="display: none;" role="dialog" aria-modal="true" aria-label="Project Aegis Architecture Presentation Suite">
+    <!-- System Architecture Briefing Suite -->
+    <div id="presenterDrawer" class="presenter-drawer mode-theater" style="display: none;" role="dialog" aria-modal="true" aria-label="Project Aegis Architecture Briefing Suite">
         <div class="presenter-backdrop" onclick="togglePresenterTour()" aria-hidden="true"></div>
         <div class="presenter-container">
             <!-- Top Utility & Mode Switcher Bar -->
@@ -559,21 +559,21 @@ events         : RINGBUF (2 MB memory ring)</div>
                 </div>
 
                 <div class="presenter-topbar__right">
-                    <!-- View Mode Toggle: Executive Deck vs Live Dashboard Tour -->
-                    <button id="tourViewToggleBtn" class="btn btn--outline btn--sm" onclick="togglePresenterMode()" title="Toggle between Full Executive Deck and Live UI Tour (Shortcut: T)">
+                    <!-- View Mode Toggle: Architecture Dossier vs Live UI Walkthrough -->
+                    <button id="tourViewToggleBtn" class="btn btn--outline btn--sm" onclick="togglePresenterMode()" title="Toggle between Full Architecture Dossier and Live UI Tour (Shortcut: T)">
                         <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/>
                         </svg>
                         <span>Live UI Walkthrough (T)</span>
                     </button>
 
-                    <!-- Close Presentation Button -->
-                    <button class="btn btn--outline btn--sm" onclick="togglePresenterTour()" style="color: var(--color-muted);" title="Exit presentation (Esc or P)">
+                    <!-- Close Briefing Button -->
+                    <button class="btn btn--outline btn--sm" onclick="togglePresenterTour()" style="color: var(--color-muted);" title="Close briefing (Esc or P)">
                         <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
                             <line x1="18" y1="6" x2="6" y2="18"/>
                             <line x1="6" y1="6" x2="18" y2="18"/>
                         </svg>
-                        <span>Exit (Esc)</span>
+                        <span>Close (Esc)</span>
                     </button>
                 </div>
             </div>
@@ -608,7 +608,7 @@ events         : RINGBUF (2 MB memory ring)</div>
 
             <!-- Main Slide Content Canvas (Responsive 2-Column Grid) -->
             <div class="presenter-body">
-                <!-- Column 1: Speaker Guidance, Jury Takeaways & Defense Dossier -->
+                <!-- Column 1: Architecture Overview & System Guarantees -->
                 <div class="presenter-col presenter-col--narrative">
                     <!-- Title Area -->
                     <div class="slide-title-block">
@@ -618,25 +618,25 @@ events         : RINGBUF (2 MB memory ring)</div>
                         </h2>
                     </div>
 
-                    <!-- Executive Pitch Box (What to Say to the Review Panel) -->
+                    <!-- Technical Architecture & In-Kernel Analysis -->
                     <div class="script-box">
                         <div class="script-box__header">
                             <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
                             </svg>
-                            <span>Executive Thesis & Review Panel Pitch</span>
-                            <span class="talking-pill">Speaker Script</span>
+                            <span>Technical Architecture & In-Kernel Analysis</span>
+                            <span class="talking-pill">Subsystem Architecture</span>
                         </div>
                         <p id="tourScriptText" class="slide-script-text"></p>
                     </div>
 
-                    <!-- 3 Structured Bullet Takeaways for the Jury -->
+                    <!-- Core Architectural Guarantees & Specifications -->
                     <div class="takeaways-container">
                         <div class="takeaways-header">
                             <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
                             </svg>
-                            <span>Core Architectural Takeaways for Evaluators</span>
+                            <span>Key Architectural Guarantees & Specifications</span>
                         </div>
                         <div class="takeaways-grid" id="tourBulletsList">
                             <!-- Populated dynamically via JS -->
@@ -699,8 +699,8 @@ events         : RINGBUF (2 MB memory ring)</div>
                     <span class="kbd-shortcut">← / →</span> <span class="footer-hint-text">Module</span>
                     <span class="kbd-shortcut">1-6</span> <span class="footer-hint-text">Jump</span>
                     <span class="kbd-shortcut">Enter</span> <span class="footer-hint-text">Run Test</span>
-                    <span class="kbd-shortcut">T</span> <span class="footer-hint-text">Deck / HUD</span>
-                    <span class="kbd-shortcut">Esc / P</span> <span class="footer-hint-text">Exit</span>
+                    <span class="kbd-shortcut">T</span> <span class="footer-hint-text">Dossier / HUD</span>
+                    <span class="kbd-shortcut">Esc / P</span> <span class="footer-hint-text">Close</span>
                 </div>
 
                 <div class="presenter-footer__right">
@@ -2013,7 +2013,7 @@ events         : RINGBUF (2 MB memory ring)</div>
 
         let isTourOpen = false;
         let currentTourStep = 0;
-        let presenterMode = "theater"; // "theater" (Full Briefing Deck) | "docked" (Live Dashboard Walkthrough)
+        let presenterMode = "theater"; // "theater" (Full Architecture Dossier) | "docked" (Live Dashboard Walkthrough)
 
         const TOUR_STAGES = [
             {
@@ -2322,7 +2322,7 @@ if (evt) {
                         <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
                         </svg>
-                        <span>Executive Briefing Deck (T)</span>
+                        <span>Architecture Dossier (T)</span>
                     `;
                     if (typeof document !== 'undefined' && document.body && document.body.classList) {
                         document.body.classList.add("presenter-drawer-open");
@@ -2366,7 +2366,7 @@ if (evt) {
                             <line x1="18" y1="6" x2="6" y2="18"/>
                             <line x1="6" y1="6" x2="18" y2="18"/>
                         </svg>
-                        <span>Exit Presentation</span>
+                        <span>Close Briefing</span>
                     `;
                 } else {
                     tourBtn.classList.remove("active");
@@ -2374,7 +2374,7 @@ if (evt) {
                         <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
                             <polygon points="5 3 19 12 5 21 5 3"/>
                         </svg>
-                        <span>Presentation Mode</span>
+                        <span>Architecture Briefing</span>
                     `;
                 }
             }
@@ -2518,7 +2518,7 @@ if (evt) {
                 }
             }
 
-            // 'P' or 'p' key toggles Presentation Walkthrough Mode
+            // 'P' or 'p' key toggles Architecture Briefing Suite
             if (e.key === "p" || e.key === "P") {
                 if (isModalOpen) return;
                 e.preventDefault();
@@ -2526,9 +2526,9 @@ if (evt) {
                 return;
             }
 
-            // Navigation when Presentation Walkthrough is active
+            // Navigation when Architecture Briefing is active
             if (isTourOpen) {
-                // 'T' or 't' key toggles between Executive Deck and Live UI Tour
+                // 'T' or 't' key toggles between Architecture Dossier and Live UI Tour
                 if (e.key === "t" || e.key === "T") {
                     e.preventDefault();
                     togglePresenterMode();
