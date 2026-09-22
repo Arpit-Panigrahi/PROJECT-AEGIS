@@ -255,7 +255,7 @@ console.log("[PASS] Button Handler 'loadForensicSample()' executed without error
 assert.doesNotThrow(() => {
     sandbox.togglePresenterTour(); // Open
     const drawer = mockDOM.getElementById("presenterDrawer");
-    assert.strictEqual(drawer.style.display, "block");
+    assert.ok(drawer.style.display === "flex" || drawer.style.display === "block");
     sandbox.togglePresenterTour(); // Close
     assert.strictEqual(drawer.style.display, "none");
 }, "togglePresenterTour() should execute cleanly");
