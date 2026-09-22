@@ -47,12 +47,16 @@ $(ENTROPY_RUNNER_BIN): tests/unit/entropy_test_runner.c
 	@echo "  CC       $@"
 	@$(CC) $(CFLAGS) $< -o $@ -lm
 
-# 6. Run all unit and differential tests
+# 6. Run all unit, differential, backend, and frontend tests
 test: all
 	@echo "=== Running Risk Unit Tests ==="
 	@$(TEST_RISK_BIN)
 	@echo "=== Running Differential Entropy Tests ==="
 	@python3 tests/differential/compare_entropy.py
+	@echo "=== Running Backend REST & SSE Tests ==="
+	@python3 tests/unit/test_dashboard_backend.py
+	@echo "=== Running Frontend JavaScript Runtime Tests ==="
+	@node tests/unit/test_frontend_js.js
 
 clean:
 	@rm -rf bin $(BPF_OBJ) $(SKEL_HDR)

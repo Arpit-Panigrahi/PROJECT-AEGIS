@@ -19,6 +19,9 @@ static void print_usage(const char *prog)
 
 int main(int argc, char **argv)
 {
+    setlinebuf(stdout);
+    setlinebuf(stderr);
+
     int mode = MODE_MONITOR;
     const char *canary_dir = "/tmp/aegis_canaries";
 

@@ -42,15 +42,19 @@ static int handle_event(void *ctx, void *data, size_t data_sz)
     fflush(stdout);
 
     /* Append JSON line to event logs for frontend real-time consumption */
-    FILE *log_fp = fopen("/var/log/aegis/events.jsonl", "a");
-    if (!log_fp)
-        log_fp = fopen("/tmp/aegis_events.jsonl", "a");
+    const char *active_log = "/var/log/aegis/events.jsonl";
+    FILE *log_fp = fopen(active_log, "a");
+    if (!log_fp) {
+        active_log = "/tmp/aegis_events.jsonl";
+        log_fp = fopen(active_log, "a");
+    }
     if (log_fp) {
         fprintf(log_fp,
             "{\"ts\":%llu,\"type\":\"%s\",\"pid\":%u,\"tgid\":%u,\"comm\":\"%s\",\"ino\":%llu,\"dev\":%u,\"count\":%u,\"entropy\":%.2f,\"risk\":%.1f,\"tier\":%u}\n",
             (unsigned long long)e->ts_ns, type_name, e->pid, e->tgid, e->comm,
             (unsigned long long)e->ino, e->dev, e->count, entropy, risk, e->tier);
         fclose(log_fp);
+        chmod(active_log, 0666);
     }
     return 0;
 }

@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
-set -e
+set -eo pipefail
 
-cd /mnt/c/Users/arpit/Desktop/aegis
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$SCRIPT_DIR"
+
+cleanup() {
+    sudo pkill -INT aegisd-fs 2>/dev/null || true
+    sleep 0.5
+    sudo pkill -9 aegisd-fs 2>/dev/null || true
+}
+trap cleanup EXIT INT TERM
 
 echo "======================================================================"
 echo "    PROJECT AEGIS — PILLAR 2 FULL SYSTEM VALIDATION HARNESS         "
@@ -18,14 +26,13 @@ make test
 
 # Stage 3: Benign Workload Test
 echo -e "\n[STAGE 3/5] Testing Benign Workload (tar -czf compression)..."
-sudo pkill -9 aegisd-fs 2>/dev/null || true
-sleep 1
+cleanup
 sudo ./bin/aegisd-fs --mode monitor > /tmp/aegis_benign.log 2>&1 &
 sleep 2
+
 ./testbed/workloads/benign/tar_workload.sh
 sleep 1
-sudo pkill -INT aegisd-fs || true
-sleep 1
+cleanup
 echo "[+] Benign test completed with zero false interventions."
 
 # Stage 4: Canary Tripwire in Monitor Mode
