@@ -54,7 +54,7 @@
 
   /* --- Radii --- */
   --radius-pill: 999px;
-  --radius-card: 24px;
+  --radius-card: 16px;
   --radius-nav-item: 8px;
   --radius-inner: 12px;
 
@@ -235,31 +235,7 @@ pre,
   gap: 0.5rem;
 }
 
-/* Accent underscore pulse token */
-.accent-token {
-  color: var(--color-accent);
-  display: inline-block;
-  font-weight: 700;
-  animation: pulse-accent 2s ease-in-out infinite;
-}
 
-@keyframes pulse-accent {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.35;
-    transform: scale(0.92);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .accent-token {
-    animation: none;
-    opacity: 1;
-  }
-}
 
 /* =============================================================================
    4. BUTTON & ACTION PRIMITIVES
@@ -475,7 +451,7 @@ header {
   align-items: center;
   justify-content: center;
   color: var(--color-fg);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(253, 255, 240, 0.12);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   transition: transform var(--motion-hover-duration) ease, border-color var(--motion-hover-duration) ease;
 }
 
@@ -574,13 +550,11 @@ header {
   height: 6px;
   border-radius: 50%;
   background-color: var(--color-status);
-  box-shadow: 0 0 6px rgba(0, 176, 147, 0.6);
   animation: pulse-status 2s ease-in-out infinite;
 }
 
 .status-badge.stopped .pulse-dot {
   background-color: var(--color-accent);
-  box-shadow: 0 0 6px rgba(232, 69, 60, 0.6);
 }
 
 @keyframes pulse-status {
@@ -629,13 +603,13 @@ header {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.3rem 0.85rem !important;
-  font-size: 0.75rem !important;
-  font-weight: 600 !important;
-  border-radius: var(--radius-pill) !important;
-  background: var(--color-fg) !important;
-  color: var(--color-bg) !important;
-  border: 1px solid var(--color-fg) !important;
+  padding: 0.3rem 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  background: var(--color-fg);
+  color: var(--color-bg);
+  border: 1px solid var(--color-fg);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   cursor: pointer;
   transition: opacity 0.15s ease, transform 0.15s ease;
@@ -652,79 +626,38 @@ header {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.3rem 0.85rem !important;
-  font-size: 0.75rem !important;
-  font-weight: 600 !important;
-  border-radius: var(--radius-pill) !important;
+  padding: 0.3rem 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
   cursor: pointer;
   transition: all 0.15s ease;
   white-space: nowrap;
 }
 
 .nav-power-btn.btn-danger {
-  border: 1px solid rgba(232, 69, 60, 0.35) !important;
-  background: rgba(232, 69, 60, 0.1) !important;
-  color: var(--color-accent) !important;
+  border: 1px solid rgba(232, 69, 60, 0.35);
+  background: rgba(232, 69, 60, 0.1);
+  color: var(--color-accent);
 }
 
 .nav-power-btn.btn-danger:hover {
-  background: rgba(232, 69, 60, 0.2) !important;
-  border-color: var(--color-accent) !important;
+  background: rgba(232, 69, 60, 0.2);
+  border-color: var(--color-accent);
 }
 
 .nav-power-btn.btn-primary {
-  border: 1px solid rgba(0, 176, 147, 0.35) !important;
-  background: rgba(0, 176, 147, 0.1) !important;
-  color: var(--color-status) !important;
+  border: 1px solid rgba(0, 176, 147, 0.35);
+  background: rgba(0, 176, 147, 0.1);
+  color: var(--color-status);
 }
 
 .nav-power-btn.btn-primary:hover {
-  background: rgba(0, 176, 147, 0.2) !important;
-  border-color: var(--color-status) !important;
+  background: rgba(0, 176, 147, 0.2);
+  border-color: var(--color-status);
 }
 
-/* Hero Telemetry Ribbon */
-.hero-telemetry-ribbon {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.35rem 0.95rem;
-  border-radius: var(--radius-pill);
-  border: 1px solid rgba(253, 255, 240, 0.1);
-  background: rgba(253, 255, 240, 0.03);
-  margin-bottom: 1.25rem;
-  font-size: 0.75rem;
-  color: var(--color-muted);
-}
 
-.hero-ribbon-item {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.ribbon-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--color-status);
-  box-shadow: 0 0 6px var(--color-status-glow);
-}
-
-.ribbon-label {
-  color: var(--color-muted);
-}
-
-.ribbon-val {
-  color: var(--color-fg);
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-}
-
-.ribbon-sep {
-  color: rgba(253, 255, 240, 0.18);
-  font-size: 0.7rem;
-}
 
 /* Header Responsive Breakpoints */
 @media (max-width: 960px) {
@@ -747,11 +680,6 @@ header {
   .nav-actions {
     gap: 0.35rem;
   }
-  .hero-telemetry-ribbon {
-    flex-wrap: wrap;
-    border-radius: var(--radius-inner);
-    padding: 0.5rem 0.75rem;
-  }
 }
 
 /* =============================================================================
@@ -762,10 +690,10 @@ main {
   width: 100%;
   max-width: var(--layout-max);
   margin: 0 auto;
-  padding: 2.5rem var(--layout-padding);
+  padding: 2rem var(--layout-padding);
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 1.75rem;
   position: relative;
   z-index: var(--z-content);
 }
@@ -1391,25 +1319,6 @@ tbody tr:hover td {
   max-height: 280px;
 }
 
-/* =============================================================================
-   14. GUIDED PRESENTATION MODE HUD DRAWER (EXECUTIVE BRIEFING CONSOLE)
-   ============================================================================= */
-
-.presenter-drawer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(16, 14, 14, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid var(--color-border);
-  z-index: var(--z-drawer);
-  box-shadow: 0 -12px 48px var(--color-shadow-heavy);
-  padding: 1.25rem var(--layout-padding) 1.35rem;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
-}
-
 .presenter-container {
   max-width: var(--layout-max);
   margin: 0 auto;
@@ -1442,32 +1351,11 @@ tbody tr:hover td {
   box-shadow: 0 0 8px rgba(253, 255, 240, 0.5);
 }
 
-.presenter-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.25rem;
-}
-
 .presenter-header__left {
   display: flex;
   align-items: center;
   gap: 0.85rem;
   flex-wrap: wrap;
-}
-
-.presenter-header__right {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  flex-shrink: 0;
-}
-
-.presenter-body {
-  display: grid;
-  grid-template-columns: 280px 1.4fr 340px;
-  gap: 1.15rem;
-  align-items: stretch;
 }
 
 /* Focus Cue Card */
@@ -1560,42 +1448,6 @@ tbody tr:hover td {
   line-height: 1.45;
 }
 
-/* Presenter Footer Bar */
-.presenter-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1px solid var(--color-border);
-  padding-top: 0.75rem;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-.kbd-shortcut {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.15rem 0.45rem;
-  border-radius: 4px;
-  background: rgba(253, 255, 240, 0.06);
-  border: 1px solid var(--color-border);
-  font-family: var(--font-body);
-  font-size: 0.6875rem;
-  color: var(--color-fg);
-  font-variant-numeric: tabular-nums;
-}
-
-/* Presentation HUD Focus Spotlight (Pulsing Hairline Ring) */
-.hud-spotlight-active {
-  border-color: var(--color-status) !important;
-  box-shadow: 0 0 0 1px var(--color-status), 0 0 24px var(--color-status-glow) !important;
-  transition: border-color 0.4s ease, box-shadow 0.4s ease;
-}
-
-.hud-spotlight-active.danger {
-  border-color: var(--color-accent) !important;
-  box-shadow: 0 0 0 1px var(--color-accent), 0 0 24px var(--color-accent-glow) !important;
-}
 
 /* =============================================================================
    15. FORENSIC INSPECTOR & MODAL DIALOGS
@@ -1895,10 +1747,420 @@ tbody tr:hover td {
   .explainer-grid {
     grid-template-columns: 1fr;
   }
+}
 
-  .presenter-body {
+@media (max-width: 768px) {
+  :root {
+    --layout-padding: 1.25rem;
+    --header-height: auto;
+  }
+
+  #site-header,
+  header {
+    height: auto;
+    padding: 0.75rem var(--layout-padding);
+  }
+
+  .header-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .nav-center {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    gap: 0.5rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .nav-center::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-start;
+  }
+
+  .nav-actions .btn,
+  .nav-actions .feature-cta {
+    flex: 1 1 auto;
+    min-height: var(--touch-target-min);
+  }
+
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .pipeline-flow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hero__header-grid {
     grid-template-columns: 1fr;
-    gap: 0.85rem;
+  }
+
+  .deck-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .deck-buttons .btn,
+  .deck-buttons .feature-cta {
+    width: 100%;
+    min-height: var(--touch-target-min);
+  }
+
+  .modal-meta-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --layout-padding: 1rem;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pipeline-flow {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-meta-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-box {
+    padding: 0;
+  }
+
+  .modal-header,
+  .modal-body {
+    padding: 1rem;
+  }
+
+  .nav-brand__name {
+    font-size: 0.875rem;
+  }
+
+  .heading-display {
+    font-size: 1.85rem;
+  }
+
+  .heading-sub {
+    font-size: 0.9375rem;
+  }
+
+  .toast-container {
+    left: 16px;
+   
+
+/* =============================================================================
+   15. FORENSIC INSPECTOR & MODAL DIALOGS
+   ============================================================================= */
+
+.canvas-footer-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-caption);
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  padding-top: 0.5rem;
+}
+
+.modal-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  background: var(--color-surface-sunken);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-inner);
+  padding: 0.85rem 1rem;
+}
+
+.modal-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.modal-meta-item span {
+  font-size: var(--text-caption);
+  color: var(--color-muted);
+}
+
+.modal-meta-item strong {
+  font-size: 0.875rem;
+  color: var(--color-fg);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.hex-inspector-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--color-surface-sunken);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-inner);
+  padding: 0.85rem;
+  overflow: hidden;
+}
+
+.hex-inspector-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--text-caption);
+  color: var(--color-muted);
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.hex-row {
+  display: block;
+  white-space: nowrap;
+}
+
+.hex-offset {
+  color: var(--color-muted);
+  user-select: none;
+  margin-right: 0.85rem;
+  font-weight: 500;
+}
+
+.hex-byte {
+  display: inline-block;
+  margin: 0 1.5px;
+  padding: 0 1px;
+  border-radius: 2px;
+  color: var(--color-muted);
+  transition: background var(--motion-hover-duration) ease;
+}
+
+.hex-byte.ascii {
+  color: var(--color-fg);
+}
+
+.hex-byte.high-entropy {
+  color: var(--color-fg);
+  background: var(--feature-cta-primary);
+  font-weight: 600;
+}
+
+.hex-ascii-view {
+  color: var(--color-muted);
+  margin-left: 1.25rem;
+  border-left: 1px solid var(--color-border);
+  padding-left: 0.85rem;
+  user-select: none;
+}
+
+.hex-ascii-view .ascii-char {
+  color: var(--color-fg);
+}
+
+.hex-ascii-view .cipher-char {
+  color: var(--color-accent);
+}
+
+.btn-ghost-pill {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-fg);
+  border-radius: var(--radius-pill);
+  padding: 0.55rem 1.25rem;
+  min-height: var(--touch-target-min);
+  font-family: var(--font-body);
+  font-size: var(--text-btn);
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color var(--motion-hover-duration) ease,
+              background var(--motion-hover-duration) ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.btn-ghost-pill:hover {
+  border-color: var(--color-fg);
+  background: var(--color-surface-hover);
+}
+
+.btn-ghost-pill:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.btn-ghost-pill-sm {
+  padding: 0.4rem 0.85rem;
+  min-height: 38px;
+  font-size: var(--text-caption);
+}
+
+/* Metric Card Tone Variants */
+.metric-card.warning {
+  border-color: var(--color-border);
+}
+
+.metric-card.danger {
+  border-color: var(--color-accent-border);
+  background: var(--color-accent-subtle);
+}
+
+.metric-card.success {
+  border-color: var(--color-status-border);
+  background: var(--color-status-subtle);
+}
+
+/* Event Stream Tag Variants */
+.tag-sample {
+  border-color: var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-muted);
+}
+
+.tag-canary {
+  border-color: var(--color-accent-border);
+  background: var(--color-accent-subtle);
+  color: var(--color-accent);
+}
+
+.tag-kill {
+  border-color: var(--feature-cta-primary);
+  background: var(--feature-cta-hover-bg);
+  color: var(--color-fg);
+}
+
+.tag-tier {
+  border-color: var(--color-status-border);
+  background: var(--color-status-subtle);
+  color: var(--color-status);
+}
+
+/* =============================================================================
+   16. TOAST NOTIFICATIONS
+   ============================================================================= */
+
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: var(--z-modal);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.65rem 1.25rem;
+  min-height: 40px;
+  background: rgba(20, 18, 18, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  color: var(--color-fg);
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  line-height: 1.4;
+  box-shadow: 0 8px 24px var(--color-shadow-medium);
+  animation: toast-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.toast.toast--success {
+  border-color: rgba(0, 176, 147, 0.35);
+}
+
+.toast.toast--danger {
+  border-color: rgba(232, 69, 60, 0.4);
+}
+
+.toast__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toast--success .toast__icon {
+  color: var(--color-status);
+}
+
+.toast--danger .toast__icon {
+  color: var(--color-accent);
+}
+
+.toast.toast--fadeout {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =============================================================================
+   17. COMPREHENSIVE RESPONSIVE SYSTEM (1440px -> 375px)
+   ============================================================================= */
+
+@media (max-width: 1200px) {
+  :root {
+    --layout-padding: 2.25rem;
+  }
+  .pipeline-flow {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --layout-padding: 2rem;
+  }
+
+  .metrics-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .pipeline-flow {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .analytics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .explainer-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -1973,23 +2235,6 @@ tbody tr:hover td {
   .modal-meta-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-
-  .presenter-drawer {
-    padding: 1rem 1rem 1.25rem;
-    max-height: 80vh;
-    overflow-y: auto;
-  }
-
-  .presenter-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-
-  .presenter-header__right {
-    width: 100%;
-    justify-content: space-between;
-  }
 }
 
 @media (max-width: 480px) {
@@ -2028,19 +2273,6 @@ tbody tr:hover td {
 
   .heading-sub {
     font-size: 0.9375rem;
-  }
-
-  .presenter-drawer {
-    padding: 0.85rem;
-  }
-
-  .presenter-footer {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .presenter-footer .feature-cta {
-    width: 100%;
   }
 
   .toast-container {

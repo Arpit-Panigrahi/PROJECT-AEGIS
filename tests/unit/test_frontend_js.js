@@ -192,15 +192,12 @@ sandbox.openForensicModal(null);
 sandbox.openForensicModal({ ino: undefined, entropy: NaN, comm: null });
 console.log("[PASS] openForensicModal handles null and undefined inputs safely.");
 
-// 7. Test Presentation Tour step boundaries
-const stepNumEl = mockDOM.getElementById("tourStepNum");
-sandbox.renderTourStep(0);
-assert.strictEqual(stepNumEl.innerText, 1);
-sandbox.renderTourStep(999); // Out of bounds high
-assert.strictEqual(stepNumEl.innerText, 6);
-sandbox.renderTourStep(-50); // Out of bounds low
-assert.strictEqual(stepNumEl.innerText, 1);
-console.log("[PASS] renderTourStep() enforces strict array boundary clamping [0 .. 5].");
+// 7. Test status UI transitions
+assert.doesNotThrow(() => {
+    sandbox.updateStatusUI(true, "enforce");
+    sandbox.updateStatusUI(false, "monitor");
+}, "updateStatusUI should handle boolean and mode strings cleanly");
+console.log("[PASS] updateStatusUI() handles operational state transitions safely.");
 
 // 8. Test formatHexDump
 const dump = sandbox.formatHexDump("000102030405060708090A0B0C0D0E0F", false);
@@ -208,7 +205,7 @@ assert(dump.includes("0x0000:"), "Hex dump must contain offset");
 console.log("[PASS] formatHexDump correctly formats binary slice with offset and ASCII.");
 
 // 9. Comprehensive Button & Interaction Execution Test Suite
-console.log("\n[*] Testing execution of all 11 button click handler functions in runtime...");
+console.log("\n[*] Testing execution of all live operational button click handler functions in runtime...");
 
 // 9.1 toggleMode
 assert.doesNotThrow(() => {
@@ -222,17 +219,7 @@ assert.doesNotThrow(() => {
 }, "toggleAgent() should execute cleanly");
 console.log("[PASS] Button Handler 'toggleAgent()' executed without error.");
 
-// 9.3 togglePresenterTour
-assert.doesNotThrow(() => {
-    sandbox.togglePresenterTour(); // Open
-    const drawer = mockDOM.getElementById("presenterDrawer");
-    assert.strictEqual(drawer.style.display, "block");
-    sandbox.togglePresenterTour(); // Close
-    assert.strictEqual(drawer.style.display, "none");
-}, "togglePresenterTour() should execute cleanly");
-console.log("[PASS] Button Handler 'togglePresenterTour()' executed without error.");
-
-// 9.4 triggerAction for all 5 simulation actions
+// 9.3 triggerAction for all 5 simulation actions
 const actions = ['simulate_entropy', 'simulate_canary', 'simulate_encryptor', 'simulate_benign', 'clear_logs'];
 actions.forEach(act => {
     assert.doesNotThrow(() => {
@@ -241,7 +228,7 @@ actions.forEach(act => {
 });
 console.log("[PASS] Button Handler 'triggerAction()' executed cleanly for all 5 actions.");
 
-// 9.5 switchTab for all 4 subsystem tabs
+// 9.4 switchTab for all 4 subsystem tabs
 const tabs = ['benchmark', 'executive', 'technical', 'explainer'];
 tabs.forEach(tab => {
     assert.doesNotThrow(() => {
@@ -250,29 +237,19 @@ tabs.forEach(tab => {
 });
 console.log("[PASS] Button Handler 'switchTab()' executed cleanly for all 4 tabs.");
 
-// 9.6 openForensicModal and closeModal
+// 9.5 openForensicModal and closeModal
 assert.doesNotThrow(() => {
     sandbox.openForensicModal({ ino: 42, entropy: 7.95, comm: 'encryptor', pid: 1234 });
     sandbox.closeModal();
 }, "openForensicModal and closeModal should execute cleanly");
 console.log("[PASS] Button Handlers 'openForensicModal()' and 'closeModal()' executed without error.");
 
-// 9.7 loadForensicSample
+// 9.6 loadForensicSample
 assert.doesNotThrow(() => {
     sandbox.loadForensicSample('cipher');
     sandbox.loadForensicSample('plain');
 }, "loadForensicSample should execute cleanly");
 console.log("[PASS] Button Handler 'loadForensicSample()' executed without error.");
-
-// 9.8 Tour navigation: nextTourStep, prevTourStep, executeTourAction
-assert.doesNotThrow(() => {
-    sandbox.togglePresenterTour(); // Open tour
-    sandbox.nextTourStep();
-    sandbox.prevTourStep();
-    sandbox.executeTourAction();
-    sandbox.togglePresenterTour(); // Close tour
-}, "Tour navigation and action functions should execute cleanly");
-console.log("[PASS] Button Handlers 'nextTourStep()', 'prevTourStep()', and 'executeTourAction()' executed without error.");
 
 console.log("\n=== ALL FRONTEND RUNTIME JAVASCRIPT & BUTTON TESTS PASSED (100% OPERATIONAL)! ===");
 

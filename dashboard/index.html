@@ -50,13 +50,7 @@
                     <strong id="modeDisplay" class="nav-mode-pill__val">Monitor</strong>
                 </button>
 
-                <!-- Architecture Review & Evaluation Walkthrough -->
-                <button id="tourBtn" class="btn btn--primary nav-tour-btn" onclick="togglePresenterTour()" title="Architecture Review Walkthrough (Shortcut: P)" aria-label="Guided Presentation Mode and Architecture Walkthrough">
-                    <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
-                        <polygon points="5 3 19 12 5 21 5 3"/>
-                    </svg>
-                    <span>Architecture Walkthrough</span>
-                </button>
+
 
                 <!-- Sentinel Power Toggle Button -->
                 <button id="agentToggleBtn" class="btn btn-danger nav-power-btn" onclick="toggleAgent()" title="Toggle sentinel daemon">
@@ -71,36 +65,14 @@
         <!-- Hero Section & Tactical Simulation Deck -->
         <section class="section--hero" id="section-hero">
             <div class="hero__copy">
-                <!-- System Telemetry Ribbon (Promoted to Hero) -->
-                <div class="hero-telemetry-ribbon">
-                    <div class="hero-ribbon-item">
-                        <span class="ribbon-dot"></span>
-                        <span class="ribbon-label">Kernel:</span>
-                        <strong id="kernelRelease" class="ribbon-val">6.6.87.2-WSL2</strong>
-                    </div>
-                    <span class="ribbon-sep">/</span>
-                    <div class="hero-ribbon-item">
-                        <span class="ribbon-label">Clock:</span>
-                        <span id="liveClock" class="ribbon-val">00:00:00 UTC</span>
-                    </div>
-                    <span class="ribbon-sep">/</span>
-                    <div class="hero-ribbon-item">
-                        <span class="ribbon-label">Interception:</span>
-                        <span class="ribbon-val">2.4 μs (eBPF LSM)</span>
-                    </div>
-                    <span class="ribbon-sep">/</span>
-                    <div class="hero-ribbon-item">
-                        <span class="ribbon-label">Loss:</span>
-                        <span class="ribbon-val">0.0% (Zero files)</span>
-                    </div>
-                </div>
+
 
                 <h1 class="heading-display">
                     <span>Autonomous in-kernel defense</span>
-                    <span class="heading-display__muted">Real-time ransomware neutralization spine<span class="accent-token">_</span></span>
+                    <span class="heading-display__muted">Real-time ransomware neutralization spine</span>
                 </h1>
                 <p class="heading-sub">
-                    Synchronous write-path interception via eBPF LSM and VFS hooks. Instant threat termination before disk serialization with zero user-space roundtrip latency.
+                    Synchronous in-kernel write interception and threat neutralization via eBPF LSM.
                 </p>
             </div>
 
@@ -111,7 +83,7 @@
                         <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" aria-hidden="true">
                             <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
                         </svg>
-                        <span>Tactical threat simulation deck</span>
+                        <span>Threat simulations</span>
                     </div>
                 </div>
                 <div class="deck-buttons">
@@ -227,38 +199,32 @@
                         <circle cx="6" cy="18" r="3"/>
                         <path d="M18 9a9 9 0 0 1-9 9"/>
                     </svg>
-                    <span>Real-time in-kernel defense pipeline</span>
+                    <span>Defense pipeline</span>
                 </span>
                 <span style="font-size: 0.75rem; color: var(--color-muted); font-variant-numeric: tabular-nums;">eBPF Probes Verified (BTF CO-RE)</span>
             </div>
             <div class="pipeline-flow">
                 <div id="pipe-io" class="pipeline-node active">
-                    <span class="node-step">Stage 1</span>
                     <span class="node-name">VFS write intercept</span>
                     <span class="node-detail">fentry/vfs_write</span>
                 </div>
                 <div id="pipe-canary" class="pipeline-node">
-                    <span class="node-step">Stage 2</span>
                     <span class="node-name">Canary map match</span>
                     <span class="node-detail">bpf_map_lookup()</span>
                 </div>
                 <div id="pipe-entropy" class="pipeline-node">
-                    <span class="node-step">Stage 3</span>
                     <span class="node-name">Miller-Madow entropy</span>
                     <span class="node-detail">Q16.16 Fixed Point</span>
                 </div>
                 <div id="pipe-risk" class="pipeline-node">
-                    <span class="node-step">Stage 4</span>
                     <span class="node-name">Risk decay fusion</span>
                     <span class="node-detail">Half-life τ=4.0s</span>
                 </div>
                 <div id="pipe-enforce" class="pipeline-node">
-                    <span class="node-step">Stage 5</span>
                     <span class="node-name">SIGKILL dispatch</span>
                     <span class="node-detail">bpf_send_signal(9)</span>
                 </div>
                 <div id="pipe-lockdown" class="pipeline-node">
-                    <span class="node-step">Stage 6</span>
                     <span class="node-name">LSM write lockdown</span>
                     <span class="node-detail">returns -EPERM</span>
                 </div>
@@ -272,7 +238,7 @@
                 <div class="panel-header">
                     <span class="panel-title">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-fg);"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-                        <span>Live entropy & risk oscilloscope (60 FPS)</span>
+                        <span>Entropy & risk waveform</span>
                     </span>
                     <div style="font-size: 0.75rem; display: flex; gap: 0.85rem; align-items: center; font-variant-numeric: tabular-nums;">
                         <span style="color: var(--color-fg); font-weight: 500; display: inline-flex; align-items: center; gap: 0.35rem;">
@@ -301,9 +267,8 @@
                 <div class="panel-header">
                     <span class="panel-title">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-fg);"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-                        <span>256-Bin byte frequency spectrum (vfs_write)</span>
+                        <span>Byte frequency spectrum</span>
                     </span>
-                    <span style="font-size: 0.75rem; color: var(--color-muted); font-variant-numeric: tabular-nums;">$c_0 \dots c_{255}$ Histogram</span>
                 </div>
                 <div class="canvas-container">
                     <canvas id="spectrumCanvas"></canvas>
@@ -323,7 +288,7 @@
                 <div class="panel-header">
                     <span class="panel-title">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-fg);"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg>
-                        <span>Decoy canary spatial radar</span>
+                        <span>Decoy canary radar</span>
                     </span>
                     <span id="radarStatusBadge" style="font-size: 0.75rem; color: var(--color-status); font-weight: 500; font-variant-numeric: tabular-nums; display: inline-flex; align-items: center; gap: 0.35rem;">
                         <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--color-status);"></span>
@@ -344,7 +309,7 @@
                             <line x1="12" y1="20" x2="12" y2="4"/>
                             <line x1="6" y1="20" x2="6" y2="14"/>
                         </svg>
-                        <span>Adaptive process state machine</span>
+                        <span>Process risk state</span>
                     </span>
                     <span id="currentTierBadge" class="tag tag--status">Tier 0: Normal</span>
                 </div>
@@ -365,9 +330,7 @@
                         <span>80: T3 Quarantine (SIGKILL)</span>
                     </div>
 
-                    <div style="background: var(--color-surface-sunken); padding: 0.85rem; border-radius: var(--radius-inner); border: 1px solid var(--color-border); font-size: 0.8rem; line-height: 1.5; color: var(--color-muted);">
-                        <strong style="color: var(--color-fg); font-weight: 500;">Kernel Action Rule:</strong> Processes writing benign documents cool down via mathematical half-life decay ($	au_{1/2}=4.0	ext{s}$). Processes touching canaries or sustaining $H > 7.80	ext{ bits}$ are locked with in-kernel <code>SIGKILL</code> and <code>-EPERM</code>.
-                    </div>
+
                 </div>
             </div>
         </section>
@@ -380,7 +343,7 @@
                         <polyline points="4 17 10 11 4 5"/>
                         <line x1="12" y1="19" x2="20" y2="19"/>
                     </svg>
-                    <span>In-kernel ring buffer live telemetry stream</span>
+                    <span>Live telemetry stream</span>
                 </span>
                 <span style="font-size: 0.75rem; color: var(--color-muted); font-variant-numeric: tabular-nums;" id="eventCounter">0 events captured</span>
             </div>
@@ -391,14 +354,14 @@
                         <tr>
                             <th>Timestamp</th>
                             <th>Event type</th>
-                            <th>Process ID</th>
-                            <th>Process name</th>
+                            <th>PID</th>
+                            <th>Process</th>
                             <th>Inode</th>
-                            <th>Buffer size</th>
-                            <th>Shannon entropy</th>
-                            <th>Risk score</th>
-                            <th>Sampling tier</th>
-                            <th>Kernel decision</th>
+                            <th>Size</th>
+                            <th>Entropy</th>
+                            <th>Risk</th>
+                            <th>Tier</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody id="telemetryBody">
@@ -627,99 +590,7 @@ events         : RINGBUF (2 MB memory ring)</div>
         </div>
     </div>
 
-    <!-- Guided Presentation Mode Floating HUD Drawer -->
-    <div id="presenterDrawer" class="presenter-drawer" style="display: none;">
-        <div class="presenter-container">
-            <!-- 6-Stage Visual Progress Bar -->
-            <div class="tour-progress-strip" id="tourProgressStrip">
-                <div class="tour-progress-seg active"></div>
-                <div class="tour-progress-seg"></div>
-                <div class="tour-progress-seg"></div>
-                <div class="tour-progress-seg"></div>
-                <div class="tour-progress-seg"></div>
-                <div class="tour-progress-seg"></div>
-            </div>
 
-            <div class="presenter-header">
-                <div class="presenter-header__left">
-                    <span class="tag tag--status">
-                        Module <span id="tourStepNum">1</span> of <span id="tourStepTotal">6</span>
-                    </span>
-                    <h3 id="tourTitle" style="font-size: 1.125rem; color: var(--color-fg); font-weight: 500; letter-spacing: -0.018em; margin: 0; display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap;">
-                        <span id="tourTitleMain">1. In-Kernel VFS Interception vs User-Space EDR</span>
-                        <span id="tourTitleSub" style="color: var(--color-muted); font-size: 0.875rem; font-weight: 400;">Kernel-Space LSM vs Ring3 User-Space Architecture</span>
-                    </h3>
-                </div>
-                <div class="presenter-header__right">
-                    <button class="btn btn--outline" onclick="prevTourStep()" id="tourPrevBtn" title="Previous module">
-                        <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" aria-hidden="true">
-                            <polyline points="15 18 9 12 15 6"/>
-                        </svg>
-                        <span>Previous</span>
-                    </button>
-                    <button class="btn btn--primary" onclick="nextTourStep()" id="tourNextBtn" title="Next module">
-                        <span>Next module</span>
-                        <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" aria-hidden="true">
-                            <polyline points="9 18 15 12 9 6"/>
-                        </svg>
-                    </button>
-                    <button class="btn btn--outline" onclick="togglePresenterTour()" style="color: var(--color-muted);" title="Close walkthrough">
-                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" aria-hidden="true">
-                            <line x1="18" y1="6" x2="6" y2="18"/>
-                            <line x1="6" y1="6" x2="18" y2="18"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <div class="presenter-body">
-                <!-- Subsystem Focus & Scope -->
-                <div class="cue-box">
-                    <div class="cue-box__header">
-                        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg>
-                        <span>Subsystem & telemetry scope</span>
-                    </div>
-                    <p id="tourFocusDesc"></p>
-                </div>
-
-                <!-- Architectural Specification & Defense Rationale -->
-                <div class="script-box">
-                    <div class="script-box__header">
-                        <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                        <span>Architectural specification & defense rationale</span>
-                    </div>
-                    <p id="tourScriptText"></p>
-                </div>
-
-                <!-- Formal Kernel Verification & Technical Proof -->
-                <div class="tech-box">
-                    <div class="tech-box__header">
-                        <span>Formal kernel verification & proof</span>
-                        <span style="font-size: 0.6875rem; color: var(--color-status);">BTF Verified</span>
-                    </div>
-                    <p id="tourTechText"></p>
-                </div>
-            </div>
-
-            <div class="presenter-footer">
-                <span style="font-size: var(--text-caption); color: var(--color-muted); display: inline-flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
-                    <span>Module review navigation:</span>
-                    <span class="kbd-shortcut">← / →</span>
-                    <span>Switch Module</span>
-                    <span class="kbd-shortcut">Enter</span>
-                    <span>Execute Verification</span>
-                    <span class="kbd-shortcut">Esc</span>
-                    <span>Close Panel</span>
-                </span>
-                <button id="tourActionBtn" class="feature-cta" onclick="executeTourAction()">
-                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" aria-hidden="true">
-                        <polygon points="5 3 19 12 5 21 5 3"/>
-                    </svg>
-                    <span>Execute live verification</span>
-                </button>
-            </div>
-        </div>
-    </div>
 
     <!-- Client-Side Dashboard Script -->
     <script>
@@ -734,7 +605,10 @@ events         : RINGBUF (2 MB memory ring)</div>
         // Clocks & Uptime
         function updateClock() {
             const now = new Date();
-            document.getElementById("liveClock").innerText = now.toTimeString().split(' ')[0] + " UTC";
+            const clockEl = document.getElementById("liveClock");
+            if (clockEl) {
+                clockEl.innerText = now.toTimeString().split(' ')[0] + " UTC";
+            }
         }
         setInterval(updateClock, 1000);
         updateClock();
@@ -833,7 +707,7 @@ events         : RINGBUF (2 MB memory ring)</div>
             oscAccumulator += dt;
             if (oscAccumulator >= 0.25) {
                 oscAccumulator -= 0.25;
-                const ambientJitter = liveEntropy < 5.0 ? (Math.random() - 0.5) * 0.08 : 0;
+                const ambientJitter = 0;
                 for (let i = 0; i < OSCILLO_POINTS - 1; i++) {
                     historyEntropy[i] = historyEntropy[i + 1];
                     historyRisk[i] = historyRisk[i + 1];
@@ -1052,13 +926,14 @@ events         : RINGBUF (2 MB memory ring)</div>
             specCtx.stroke();
             specCtx.restore();
 
-            specCtx.font = '9px Inter, sans-serif';
-            specCtx.fillStyle = 'rgba(253, 255, 240, 0.45)';
-            specCtx.textAlign = 'center';
-            specCtx.fillText('ASCII plaintext window (0x20..0x7E)', (xAsciiStart + xAsciiEnd) / 2, padTop - 6);
-
-            // Real-time live stats overlay in top right
-            const asciiPct = liveEntropy >= 7.80 ? 4.2 : 88.6;
+            // Real-time live stats overlay in top right computed from byte frequency histogram
+            let totalPower = 0;
+            let asciiPower = 0;
+            for (let i = 0; i < 256; i++) {
+                totalPower += byteSpectrum[i];
+                if (i >= 0x20 && i <= 0x7E) asciiPower += byteSpectrum[i];
+            }
+            const asciiPct = totalPower > 0.05 ? ((asciiPower / totalPower) * 100).toFixed(1) : (liveEntropy > 0 ? "88.6" : "0.0");
             specCtx.textAlign = 'right';
             specCtx.fillStyle = 'rgba(253, 255, 240, 0.5)';
             specCtx.fillText(`Entropy: ${liveEntropy.toFixed(2)} bits | ASCII: ${asciiPct}%`, w - padX - 4, padTop - 6);
@@ -1422,14 +1297,16 @@ events         : RINGBUF (2 MB memory ring)</div>
                     pipeCanary.classList.add("danger");
                     setTimeout(() => pipeCanary.classList.remove("danger"), 2500);
                 }
-                if (canaryPoints && canaryPoints[0]) {
-                    canaryPoints[0].breached = true;
-                    canaryPoints[0].breachedAt = performance.now();
-                }
-                const radarBadge = document.getElementById("radarStatusBadge");
-                if (radarBadge) {
-                    radarBadge.innerHTML = '<span style="width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent);"></span> 1 decoy tampered';
-                    radarBadge.style.color = 'var(--color-accent)';
+                if (canaryPoints) {
+                    const targetCanary = canaryPoints.find(c => !c.breached) || canaryPoints[0];
+                    targetCanary.breached = true;
+                    targetCanary.breachedAt = performance.now();
+                    const breachedCount = canaryPoints.filter(c => c.breached).length;
+                    const radarBadge = document.getElementById("radarStatusBadge");
+                    if (radarBadge) {
+                        radarBadge.innerHTML = `<span style="width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent);"></span> ${breachedCount} decoy${breachedCount > 1 ? 's' : ''} tampered`;
+                        radarBadge.style.color = 'var(--color-accent)';
+                    }
                 }
             } else if (e.type === "KILL_DECISION") {
                 tagClass = "tag-kill";
@@ -1441,9 +1318,13 @@ events         : RINGBUF (2 MB memory ring)</div>
                 const pipeLockdown = document.getElementById("pipe-lockdown");
                 if (pipeEnforce) pipeEnforce.classList.add("danger");
                 if (pipeLockdown) pipeLockdown.classList.add("danger");
-                if (canaryPoints && canaryPoints[1]) {
-                    canaryPoints[1].breached = true;
-                    canaryPoints[1].breachedAt = performance.now();
+                if (canaryPoints) {
+                    canaryPoints.slice(0, 2).forEach(c => {
+                        if (!c.breached) {
+                            c.breached = true;
+                            c.breachedAt = performance.now();
+                        }
+                    });
                 }
                 const radarBadge = document.getElementById("radarStatusBadge");
                 if (radarBadge) {
@@ -1736,237 +1617,17 @@ events         : RINGBUF (2 MB memory ring)</div>
         let isTourOpen = false;
         let currentTourStep = 0;
 
-        function clearSpotlights() {
-            document.querySelectorAll(".hud-spotlight-active").forEach(el => {
-                el.classList.remove("hud-spotlight-active", "danger");
-            });
-        }
+        // Tour functions removed - stubs for backward compatibility
+        function togglePresenterTour() {}
+        function renderTourStep() {}
+        function nextTourStep() {}
+        function prevTourStep() {}
+        function executeTourAction() {}
 
-        function setSpotlight(selector, isDanger = false) {
-            clearSpotlights();
-            if (!selector) return;
-            const target = document.querySelector(selector);
-            if (target) {
-                target.classList.add("hud-spotlight-active");
-                if (isDanger) target.classList.add("danger");
-                target.scrollIntoView({ behavior: "smooth", block: "center" });
-            }
-        }
-
-        const TOUR_STAGES = [
-            {
-                num: 1,
-                targetSelector: ".pipeline-card",
-                titleMain: "1. In-Kernel VFS Interception vs User-Space EDR",
-                titleSub: "Kernel-Space LSM vs Ring3 User-Space Architecture",
-                cue: "Inspect the primary system state badge ('Kernel defender active') and the real-time 6-stage in-kernel defense pipeline ribbon above.",
-                script: "Conventional endpoint detection and response (EDR) solutions execute in user space (Ring 3), relying on asynchronous kernel-to-user notification queues like fanotify or ETW. Under high write throughput, IPC buffering introduces 150 to 200 milliseconds of latency—enabling modern ransomware to encrypt dozens of files before detection fires. Project Aegis eliminates this blind spot by embedding detection directly inside the Linux Virtual File System (VFS) write path via eBPF and Linux Security Modules (LSM). Synchronous write interception operates at 2.4 microseconds latency, preempting malicious operations before bytes commit to the underlying storage layer.",
-                tech: "Hook: SEC(\"fentry/vfs_write\") compiled via clang BTF CO-RE. Operates with zero user/kernel context switches, zero copy overhead, and 3.8 MB total agent footprint.",
-                actionLabel: "Inspect In-Kernel Pipeline State",
-                actionFn: () => {
-                    setSpotlight(".pipeline-card");
-                    const pipeIo = document.getElementById("pipe-io");
-                    if (pipeIo) pipeIo.classList.add("active");
-                }
-            },
-            {
-                num: 2,
-                targetSelector: ".radar-container",
-                titleMain: "2. Zero-Trust Decoy Canaries & Spatial Tripwires",
-                titleSub: "O(1) Kernel Inode Lookup & Attacker Pre-Emption",
-                cue: "Inspect the 360° tactical decoy radar displaying 5 active high-priority canaries seeded across filesystem paths.",
-                script: "Ransomware directory traversals systematically iterate through folder trees in alphanumeric order to maximize target damage. Project Aegis exploits this attacker heuristic by deploying synthetic priority canaries (such as !00_SystemConfig.docx and _0_SecretKeys.kdbx) at key root directories. Canary inode numbers are registered inside an in-kernel BPF hash map. The instant any unauthorized process executes a write, rename, or unlink operation against a decoy, the kernel detects the access in O(1) time and immediately penalizes the offending process with a +40.0 threat score—flagging the attack before user files are touched.",
-                tech: "O(1) in-kernel lookup via bpf_map_lookup_elem(&canary_set, &fkey) on inode/dev pairs inside vfs_write, rename, and unlink LSM hooks.",
-                actionLabel: "Simulate Decoy Tripwire Tampering",
-                actionFn: () => {
-                    setSpotlight(".radar-container", true);
-                    triggerAction("simulate_canary");
-                }
-            },
-            {
-                num: 3,
-                targetSelector: ".oscilloscope-card",
-                titleMain: "3. Real-Time Byte Entropy & Distribution",
-                titleSub: "Fixed-Point Q16.16 Miller–Madow Bias-Corrected Engine",
-                cue: "Inspect the 256-bin discrete byte frequency spectrum and the dual-channel live oscilloscope waveform.",
-                script: "Plaintext documents, source files, and database records produce byte frequencies tightly clustered in ASCII and UTF-8 ranges (Shannon entropy ~2.8 to 4.5 bits/byte). In contrast, modern ciphers (AES-256, ChaCha20) output pseudorandom distributions with entropy approaching 8.00 bits/byte. Because floating-point math is prohibited in the Linux kernel, Aegis implements Shannon entropy using Q16.16 fixed-point integer arithmetic with logarithmic lookup tables and asymptotic Miller–Madow bias correction. When write entropy crosses 7.80 bits/byte on non-whitelisted paths, a threat score increment of +30.0 is applied instantly.",
-                tech: "Fixed-point Q16.16 integer math: H_MM = (T[N] - ∑ c_i·log2(c_i))/N + (K_obs - 1)·47274/N. Maximum divergence against 64-bit IEEE float is < 0.00003 bits across 200 test vectors.",
-                actionLabel: "Stream 4KiB High-Entropy Ciphertext",
-                actionFn: () => {
-                    setSpotlight(".oscilloscope-card");
-                    triggerAction("simulate_entropy");
-                }
-            },
-            {
-                num: 4,
-                targetSelector: ".state-machine-card",
-                titleMain: "4. Exponential Risk Decay & Workload Tolerance",
-                titleSub: "0.0% False Positive Rate on High-Throughput Archival Data",
-                cue: "Inspect the process risk tier state machine and the adaptive write-sampling gate (1-in-16 -> 1-in-4 -> 100%).",
-                script: "A core weakness of naive entropy detectors is high false-positive rates during benign archival operations (tar, gzip, zip, gcc builds). Project Aegis solves this via an exponential risk decay engine with a half-life of 4.0 seconds, computed via fast integer bit-shifts in Q8.8 fixed-point math. Intermittent bursts of compressed writes decay naturally during normal inter-write pauses, preventing benign processes from escalating to quarantine. In rigorous benchmark trials across a 2,000-file corpus, Aegis maintained a 0.0% false-positive rate while preserving 100% of user data.",
-                tech: "Q8.8 bit-shift decay: R(t) = R_0 >> (elapsed_ms / 4000). Sampling gate stages: Tier 0 (1-in-16 writes), Tier 1 (1-in-4 writes), Tier 2 (100% continuous inspection).",
-                actionLabel: "Run Benign Tar Archive Stress Test",
-                actionFn: () => {
-                    setSpotlight(".state-machine-card");
-                    triggerAction("simulate_benign");
-                }
-            },
-            {
-                num: 5,
-                targetSelector: ".log-table-container",
-                titleMain: "5. In-Kernel Active Neutralization & Lockdown",
-                titleSub: "Synchronous SIGKILL & LSM -EPERM Enforcement",
-                cue: "Inspect the live telemetry event ring buffer and watch Stages 5 and 6 of the defense pipeline engage active lockdown.",
-                script: "Upon crossing the Tier 3 risk boundary (≥ 80.0 points), Aegis executes autonomous in-kernel neutralization without user-space round-trips. The kernel probe dispatches bpf_send_signal(SIGKILL) directly to the offending process task struct, immediately terminating the malicious thread group. Concurrently, the attached LSM file_permission hook returns -EPERM on all open and subsequent file descriptors owned by that TGID, guaranteeing that in-flight write buffers are dropped before reaching storage. Zero files are compromised.",
-                tech: "In-kernel bpf_send_signal(SIGKILL) paired with synchronous LSM return -EPERM. Neutralization occurs in < 3 microseconds; exit code 137 enforced.",
-                actionLabel: "Launch Simulated Ransomware Attack",
-                actionFn: () => {
-                    setSpotlight(".log-table-container", true);
-                    triggerAction("simulate_encryptor");
-                }
-            },
-            {
-                num: 6,
-                targetSelector: ".panel-card",
-                titleMain: "6. Forensic Inspection & Comparative Benchmark",
-                titleSub: "Subsystem Verification vs CrowdStrike & Microsoft Defender",
-                cue: "Inspect the architectural benchmark matrix and the In-Kernel Forensic Hex Inspector modal dialog.",
-                script: "Every intercepted event is captured in a lockless 2 MB BPF ring buffer along with a 128-byte payload slice, enabling instant forensic verification of encryption headers and cipher entropy. Comparative architectural benchmarking demonstrates substantial improvements over legacy enterprise EDRs: while enterprise agents take ~182 ms and lose 15–45 files per attack, Aegis intercepts in 2.4 microseconds with 0 files lost, requiring < 0.8% CPU overhead and only 3.8 MB of resident memory.",
-                tech: "Lockless 2 MB ring buffer (bpf_ringbuf_output). Sub-microsecond payload capture, offset address mapping, and zero memory corruption risk.",
-                actionLabel: "Open Forensic Hex Inspector",
-                actionFn: () => {
-                    setSpotlight(".panel-card");
-                    switchTab("benchmark");
-                    openForensicModal({ ino: 41, entropy: 7.99, comm: "encryptor_attack", pid: 4427 });
-                }
-            }
-        ];
-
-        function togglePresenterTour() {
-            isTourOpen = !isTourOpen;
-            const drawer = document.getElementById("presenterDrawer");
-            if (drawer) {
-                drawer.style.display = isTourOpen ? "block" : "none";
-            }
-            if (isTourOpen) {
-                renderTourStep(currentTourStep);
-            } else {
-                clearSpotlights();
-            }
-        }
-
-        function renderTourStep(stepIdx) {
-            currentTourStep = Math.max(0, Math.min(TOUR_STAGES.length - 1, Number(stepIdx) || 0));
-            const stage = TOUR_STAGES[currentTourStep];
-            if (!stage) return;
-
-            // Update Progress Segments
-            document.querySelectorAll(".tour-progress-seg").forEach((seg, idx) => {
-                seg.classList.remove("active", "completed");
-                if (idx < stepIdx) {
-                    seg.classList.add("completed");
-                } else if (idx === stepIdx) {
-                    seg.classList.add("active");
-                }
-            });
-
-            const stepNumEl = document.getElementById("tourStepNum");
-            if (stepNumEl) stepNumEl.innerText = stage.num;
-
-            const titleMainEl = document.getElementById("tourTitleMain");
-            const titleSubEl = document.getElementById("tourTitleSub");
-            const titleEl = document.getElementById("tourTitle");
-
-            if (titleMainEl && titleSubEl) {
-                titleMainEl.innerText = stage.titleMain;
-                titleSubEl.innerText = stage.titleSub;
-            } else if (titleEl) {
-                titleEl.innerText = `${stage.titleMain} — ${stage.titleSub}`;
-            }
-
-            const focusDescEl = document.getElementById("tourFocusDesc");
-            if (focusDescEl) focusDescEl.innerText = stage.cue;
-
-            const scriptTextEl = document.getElementById("tourScriptText");
-            if (scriptTextEl) scriptTextEl.innerText = stage.script;
-
-            const techTextEl = document.getElementById("tourTechText");
-            if (techTextEl) techTextEl.innerText = stage.tech;
-
-            const actionBtn = document.getElementById("tourActionBtn");
-            if (actionBtn) {
-                actionBtn.innerHTML = `
-                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" aria-hidden="true">
-                        <polygon points="5 3 19 12 5 21 5 3"/>
-                    </svg>
-                    <span>${stage.actionLabel}</span>
-                `;
-            }
-
-            const prevBtn = document.getElementById("tourPrevBtn");
-            if (prevBtn) prevBtn.disabled = (stepIdx === 0);
-
-            const nextBtn = document.getElementById("tourNextBtn");
-            if (nextBtn) {
-                const isLast = (stepIdx === TOUR_STAGES.length - 1);
-                nextBtn.innerHTML = `
-                    <span>${isLast ? "Finish tour" : "Next stage"}</span>
-                    <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" aria-hidden="true">
-                        <polyline points="9 18 15 12 9 6"/>
-                    </svg>
-                `;
-            }
-
-            // Spotlight the stage target component
-            if (stage.targetSelector) {
-                setSpotlight(stage.targetSelector, stage.num === 5 || stage.num === 2);
-            }
-        }
-
-        function nextTourStep() {
-            if (currentTourStep < TOUR_STAGES.length - 1) {
-                renderTourStep(currentTourStep + 1);
-            } else {
-                togglePresenterTour();
-            }
-        }
-
-        function prevTourStep() {
-            if (currentTourStep > 0) {
-                renderTourStep(currentTourStep - 1);
-            }
-        }
-
-        function executeTourAction() {
-            const stage = TOUR_STAGES[currentTourStep];
-            if (stage && stage.actionFn) {
-                stage.actionFn();
-            }
-        }
-
-        // Keyboard Shortcuts for Presentation Tour
         document.addEventListener('keydown', function(e) {
-            // If modal is open, Escape closes modal
             const modal = document.getElementById("forensicModal");
             if (modal && modal.classList.contains("open") && e.key === "Escape") {
                 closeModal();
-                return;
-            }
-
-            if (!isTourOpen) return;
-            if (e.key === "ArrowRight") {
-                nextTourStep();
-            } else if (e.key === "ArrowLeft") {
-                prevTourStep();
-            } else if (e.key === "Escape") {
-                togglePresenterTour();
-            } else if (e.key === " " || e.key === "Enter") {
-                // Space or Enter executes active stage action
-                if (document.activeElement && (document.activeElement.tagName === "BUTTON" || document.activeElement.tagName === "INPUT")) {
-                    return;
-                }
-                e.preventDefault();
-                executeTourAction();
             }
         });
 

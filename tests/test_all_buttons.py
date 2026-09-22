@@ -13,19 +13,21 @@ if not script_match:
 
 js = script_match.group(1)
 
-print("=== CHECK 1: Verifying All Button Click Handlers in JavaScript ===")
+print("=== CHECK 1: Verifying All Operational Function Handlers in JavaScript ===")
 required_functions = [
     "toggleMode",
-    "togglePresenterTour",
     "toggleAgent",
     "triggerAction",
     "switchTab",
     "closeModal",
     "loadForensicSample",
-    "prevTourStep",
-    "nextTourStep",
-    "executeTourAction",
-    "openForensicModal"
+    "openForensicModal",
+    "addTelemetryRow",
+    "checkStatus",
+    "initSSE",
+    "drawOscilloscope",
+    "drawSpectrum",
+    "drawRadar"
 ]
 
 all_funcs_ok = True
@@ -84,28 +86,34 @@ else:
     print("[FAIL] Modal '#forensicModal' MISSING!")
     all_modal_ok = False
 
-print("\n=== CHECK 5: Verifying Presenter Tour Controls & Data Elements ===")
-tour_drawer = soup.find(id="presenterDrawer")
-tour_elements = [
-    "tourStepNum", "tourStepTotal", "tourTitleMain", "tourTitleSub",
-    "tourFocusDesc", "tourScriptText", "tourTechText", "tourActionBtn",
-    "tourPrevBtn", "tourNextBtn"
+print("\n=== CHECK 5: Verifying Tactical Threat Simulation Buttons & Header Controls ===")
+sim_actions = [
+    "simulate_encryptor",
+    "simulate_canary",
+    "simulate_entropy",
+    "simulate_benign",
+    "clear_logs"
 ]
-all_tour_ok = True
-if tour_drawer:
-    print("[PASS] Tour Drawer '#presenterDrawer' exists in DOM")
-    for el_id in tour_elements:
-        if soup.find(id=el_id):
-            print(f"[PASS] Tour child '#{el_id}' exists")
-        else:
-            print(f"[FAIL] Tour child '#{el_id}' MISSING!")
-            all_tour_ok = False
-else:
-    print("[FAIL] Tour Drawer '#presenterDrawer' MISSING!")
-    all_tour_ok = False
+all_sims_ok = True
+for act in sim_actions:
+    btn = soup.find("button", onclick=re.compile(rf"triggerAction\(['\"]{act}['\"]\s*\)"))
+    if btn:
+        print(f"[PASS] Simulation button for action '{act}' exists in DOM")
+    else:
+        print(f"[FAIL] Simulation button for action '{act}' MISSING!")
+        all_sims_ok = False
+
+header_controls = ["modeBtn", "agentToggleBtn", "statusBadge"]
+for ctrl in header_controls:
+    el = soup.find(id=ctrl)
+    if el:
+        print(f"[PASS] Header control '#{ctrl}' exists in DOM")
+    else:
+        print(f"[FAIL] Header control '#{ctrl}' MISSING!")
+        all_sims_ok = False
 
 print("\n=== SUMMARY ===")
-if all_funcs_ok and all_links_ok and all_tabs_ok and all_modal_ok and all_tour_ok:
+if all_funcs_ok and all_links_ok and all_tabs_ok and all_modal_ok and all_sims_ok:
     print("[SUCCESS] ALL BUTTONS, HANDLERS, LINKS, AND DOM TARGETS ARE 100% VALIDATED!")
     sys.exit(0)
 else:

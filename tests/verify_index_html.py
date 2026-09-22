@@ -4,12 +4,16 @@ def check_html():
         content = f.read()
 
     checks = [
-        ("Guided Presentation Mode button", 'Guided Presentation Mode'),
-        ("Floating HUD drawer", 'id="presenterDrawer"'),
+        ("Threat Simulation Deck", 'id="section-hero"'),
+        ("Telemetry Metrics Grid", 'class="metrics-grid"'),
+        ("Defense Pipeline Strip", 'class="pipeline-card"'),
         ("Oscilloscope Canvas", 'id="oscilloCanvas"'),
         ("256-Bin Spectrum Canvas", 'id="spectrumCanvas"'),
-        ("360° Radar Canvas", 'id="radarCanvas"'),
-        ("Forensic Hex Modal", 'id="forensicModal"')
+        ("Canary Radar Canvas", 'id="radarCanvas"'),
+        ("Process State Machine", 'id="currentTierBadge"'),
+        ("Live Telemetry Stream", 'id="telemetryTable"'),
+        ("Forensic Hex Modal", 'id="forensicModal"'),
+        ("Benchmark & Architecture Tabs", 'id="tab-benchmark"')
     ]
 
     print("=== Checking index.html UI Requirements ===")
