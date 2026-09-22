@@ -194,32 +194,6 @@ pre,
   color: var(--color-fg);
 }
 
-/* =============================================================================
-   2. CENTER-AXIS GUIDE LINE (LAYOUT SPINE)
-   ============================================================================= */
-
-.page-guide-line {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 1px;
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    var(--color-border) var(--header-height),
-    var(--color-border) calc(100% - 4rem),
-    transparent 100%
-  );
-  pointer-events: none;
-  z-index: var(--z-guide);
-}
-
-@media (max-width: 900px) {
-  .page-guide-line {
-    display: none;
-  }
-}
 
 /* =============================================================================
    3. TYPOGRAPHY PRIMITIVES & SPLIT HEADINGS
@@ -453,114 +427,156 @@ pre,
 header {
   position: sticky;
   top: 0;
-  height: var(--header-height);
-  background: var(--color-header-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--color-border);
+  height: 64px;
+  background: rgba(16, 14, 14, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(253, 255, 240, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   z-index: var(--z-header);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 var(--layout-padding);
+  padding: 0 2rem;
   width: 100%;
 }
 
 .header-container {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
   max-width: var(--layout-max);
   margin: 0 auto;
   gap: 1.5rem;
 }
 
-/* 3-Column Navigation Grid */
+/* 1. Brand Identity */
 .nav-brand {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 0.75rem;
   text-decoration: none;
   color: var(--color-fg);
+  flex-shrink: 0;
+  transition: opacity var(--motion-hover-duration) ease;
+}
+
+.nav-brand:hover {
+  opacity: 0.92;
 }
 
 .nav-brand__logo {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-nav-item);
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(253, 255, 240, 0.14);
+  background: linear-gradient(135deg, rgba(253, 255, 240, 0.06), rgba(253, 255, 240, 0.01));
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--color-fg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(253, 255, 240, 0.1);
+  transition: transform var(--motion-hover-duration) ease, border-color var(--motion-hover-duration) ease;
 }
 
-.nav-brand__logo svg {
-  width: 18px;
-  height: 18px;
-  stroke: currentColor;
-  fill: none;
+.nav-brand:hover .nav-brand__logo {
+  transform: translateY(-1px);
+  border-color: rgba(253, 255, 240, 0.28);
 }
 
-.nav-brand__title {
+.nav-brand__meta {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
 }
 
 .nav-brand__name {
-  font-size: 0.9375rem;
+  font-size: 1.0625rem;
   font-weight: 600;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   color: var(--color-fg);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
 }
 
-.nav-brand__badge {
+.nav-brand__pill {
   font-size: 0.6875rem;
-  padding: 0.15rem 0.5rem;
+  padding: 0.2rem 0.55rem;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
+  border: 1px solid rgba(253, 255, 240, 0.12);
+  background: rgba(253, 255, 240, 0.04);
   color: var(--color-muted);
   font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
-.nav-brand__sub {
-  font-size: 0.75rem;
-  color: var(--color-muted);
-}
-
-/* Center Cluster */
-.nav-center {
+/* 2. Centered Navigation Links */
+.nav-links {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
+  gap: 0.35rem;
 }
 
-.system-pill {
+.nav-link {
+  color: var(--color-muted);
+  font-size: 0.84375rem;
+  font-weight: 500;
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-nav-item);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--motion-hover-duration) ease,
+              background var(--motion-hover-duration) ease;
+}
+
+.nav-link:hover {
+  color: var(--color-fg);
+  background: rgba(253, 255, 240, 0.05);
+}
+
+.nav-link:active {
+  background: rgba(253, 255, 240, 0.08);
+}
+
+/* 3. Right Action & Status Cluster */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-shrink: 0;
+}
+
+/* Telemetry Meta Chip */
+.nav-meta-chip {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
   padding: 0.35rem 0.75rem;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  font-size: var(--text-caption);
+  border: 1px solid rgba(253, 255, 240, 0.08);
+  background: rgba(253, 255, 240, 0.02);
+  font-size: 0.75rem;
   color: var(--color-muted);
   white-space: nowrap;
 }
 
-.system-pill strong {
-  color: var(--color-fg);
+.nav-meta-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: var(--color-muted);
+}
+
+.nav-meta-item {
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
   font-weight: 500;
 }
 
-/* Status Badge with Teal Dot */
+.nav-meta-sep {
+  color: rgba(253, 255, 240, 0.18);
+  font-size: 0.7rem;
+}
+
+/* Status Badge */
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -570,9 +586,10 @@ header {
   border: 1px solid var(--color-status-border);
   background: var(--color-status-subtle);
   color: var(--color-status);
-  font-size: var(--text-caption);
+  font-size: 0.75rem;
   font-weight: 500;
   white-space: nowrap;
+  letter-spacing: 0.01em;
 }
 
 .status-badge.stopped {
@@ -607,12 +624,73 @@ header {
   }
 }
 
-/* Right Actions Cluster */
-.nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  justify-content: flex-end;
+/* Navbar Action Buttons */
+.nav-btn-mode {
+  padding: 0.35rem 0.85rem;
+  font-size: 0.8125rem;
+  gap: 0.35rem;
+  border-radius: var(--radius-pill);
+}
+
+.nav-btn-mode__label {
+  color: var(--color-muted);
+  font-weight: 400;
+}
+
+.nav-btn-mode__val {
+  color: var(--color-fg);
+  font-weight: 600;
+}
+
+.nav-btn-tour {
+  padding: 0.35rem 0.95rem;
+  font-size: 0.8125rem;
+  border-radius: var(--radius-pill);
+  border-color: rgba(253, 255, 240, 0.16);
+  background: rgba(253, 255, 240, 0.04);
+}
+
+.nav-btn-tour:hover {
+  background: rgba(253, 255, 240, 0.09);
+  border-color: rgba(253, 255, 240, 0.3);
+}
+
+.nav-btn-sentinel {
+  padding: 0.35rem 0.95rem;
+  font-size: 0.8125rem;
+  border-radius: var(--radius-pill);
+}
+
+/* Header Responsive Breakpoints */
+@media (max-width: 1160px) {
+  .nav-meta-chip {
+    display: none;
+  }
+}
+
+@media (max-width: 960px) {
+  .nav-links {
+    display: none;
+  }
+  #site-header, header {
+    padding: 0 1.25rem;
+  }
+}
+
+@media (max-width: 680px) {
+  .nav-btn-tour span {
+    display: none;
+  }
+  .nav-brand__pill {
+    display: none;
+  }
+  .nav-actions {
+    gap: 0.4rem;
+  }
+  #site-header, header {
+    padding: 0 1rem;
+    height: 56px;
+  }
 }
 
 /* =============================================================================

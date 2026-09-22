@@ -10,66 +10,69 @@
     <link rel="stylesheet" href="design_system.css">
 </head>
 <body>
-    <!-- Center-Axis Layout Spine -->
-    <div class="page-guide-line" aria-hidden="true"></div>
-
     <!-- Top Fixed Navigation Bar -->
     <header id="site-header">
         <div class="header-container">
-            <!-- 1. Brand Logo & Name -->
-            <div class="nav-brand">
+            <!-- 1. Brand Identity -->
+            <a href="#" class="nav-brand" aria-label="Project Aegis Home">
                 <div class="nav-brand__logo" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none">
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <path d="M9 12l2 2 4-4"/>
                     </svg>
                 </div>
-                <div class="nav-brand__title">
-                    <div class="nav-brand__name">
-                        Project Aegis
-                        <span class="nav-brand__badge">Pillar 2</span>
-                    </div>
-                    <span class="nav-brand__sub">In-kernel ransomware defense</span>
+                <div class="nav-brand__meta">
+                    <span class="nav-brand__name">Project Aegis</span>
+                    <span class="nav-brand__pill">Pillar 2 · eBPF LSM</span>
                 </div>
-            </div>
+            </a>
 
-            <!-- 2. Live Kernel Telemetry Cluster -->
-            <div class="nav-center">
-                <div class="system-pill">
-                    <span>Kernel:</span>
-                    <strong id="kernelRelease">6.6.87.2-WSL2</strong>
-                </div>
-                <div class="system-pill">
-                    <span>Clock:</span>
-                    <span id="liveClock">00:00:00 UTC</span>
-                </div>
-                <div id="statusBadge" class="status-badge">
-                    <span class="pulse-dot" aria-hidden="true"></span>
-                    <span id="statusText">Kernel defender active</span>
-                </div>
-            </div>
+            <!-- 2. Primary Navigation Links -->
+            <nav class="nav-links" aria-label="Section navigation">
+                <a href="#section-hero" class="nav-link">Simulations</a>
+                <a href="#section-oscilloscope" class="nav-link">Waveform</a>
+                <a href="#analytics-grid" class="nav-link">Tripwire radar</a>
+                <a href="#section-telemetry" class="nav-link">Event stream</a>
+                <a href="#section-benchmark" class="nav-link">Benchmarks</a>
+            </nav>
 
-            <!-- 3. Action Controls -->
+            <!-- 3. Operational Telemetry & Action Controls -->
             <div class="nav-actions">
-                <button id="tourBtn" class="btn" onclick="togglePresenterTour()" title="Guided presentation tour">
-                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" aria-hidden="true">
-                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                        <line x1="12" y1="19" x2="12" y2="23"/>
-                        <line x1="8" y1="23" x2="16" y2="23"/>
-                    </svg>
-                    <span>Guided presentation</span>
+                <!-- System Telemetry Meta Chip -->
+                <div class="nav-meta-chip" title="Active kernel release and system UTC clock">
+                    <span class="nav-meta-dot"></span>
+                    <span id="kernelRelease" class="nav-meta-item">6.6.87.2-WSL2</span>
+                    <span class="nav-meta-sep">/</span>
+                    <span id="liveClock" class="nav-meta-item">00:00:00 UTC</span>
+                </div>
+
+                <!-- Live Defender Status Badge -->
+                <div id="statusBadge" class="status-badge" title="Kernel defender status">
+                    <span class="pulse-dot" aria-hidden="true"></span>
+                    <span id="statusText">Defender active</span>
+                </div>
+
+                <!-- Mode Switcher -->
+                <button id="modeBtn" class="btn btn-outline nav-btn-mode" onclick="toggleMode()" title="Toggle enforcement mode">
+                    <span class="nav-btn-mode__label">Mode:</span>
+                    <strong id="modeDisplay" class="nav-btn-mode__val">Monitor</strong>
                 </button>
-                <button id="modeBtn" class="btn btn-outline" onclick="toggleMode()">
-                    <span>Mode:</span>
-                    <strong id="modeDisplay" style="color: var(--color-fg); font-weight: 600;">Monitor</strong>
-                </button>
-                <button id="agentToggleBtn" class="btn btn-danger" onclick="toggleAgent()">
+
+                <!-- Guided Presentation Tour -->
+                <button id="tourBtn" class="btn nav-btn-tour" onclick="togglePresenterTour()" title="Guided Presentation Mode (Shortcut: P)">
                     <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" aria-hidden="true">
-                        <circle cx="12" cy="12" r="10"/>
-                        <line x1="15" y1="9" x2="9" y2="15"/>
-                        <line x1="9" y1="9" x2="15" y2="15"/>
+                        <polygon points="5 3 19 12 5 21 5 3"/>
                     </svg>
-                    <span>Stop sentinel</span>
+                    <span>Guided Presentation Mode</span>
+                </button>
+
+                <!-- Sentinel Power Toggle Button -->
+                <button id="agentToggleBtn" class="btn btn-danger nav-btn-sentinel" onclick="toggleAgent()" title="Toggle sentinel daemon">
+                    <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none" aria-hidden="true">
+                        <path d="M18.36 6.64a9 9 0 1 1-12.73 0"/>
+                        <line x1="12" y1="2" x2="12" y2="12"/>
+                    </svg>
+                    <span>Stop Sentinel</span>
                 </button>
             </div>
         </div>
