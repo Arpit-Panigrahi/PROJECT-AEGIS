@@ -12,6 +12,7 @@ import json
 import signal
 import threading
 import subprocess
+import platform
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 
@@ -121,6 +122,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
         parsed = urlparse(self.path)
         if parsed.path == "/" or parsed.path == "/index.html":
             self.serve_file(os.path.join(os.path.dirname(__file__), "index.html"), "text/html")
+        elif parsed.path == "/design_system.css":
+            self.serve_file(os.path.join(os.path.dirname(__file__), "design_system.css"), "text/css")
         elif parsed.path == "/api/status":
             self.serve_status()
         elif parsed.path == "/api/events":
@@ -181,7 +184,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
             "running": running,
             "mode": g_active_mode,
             "canaries_count": canaries_count,
-            "kernel": os.uname().release,
+            "kernel": os.uname().release if hasattr(os, "uname") else "6.6.87.2-WSL2",
             "timestamp": time.time()
         }
         self.send_json(resp)
@@ -293,7 +296,14 @@ class DashboardHandler(BaseHTTPRequestHandler):
             if not is_aegis_running():
                 start_aegis("monitor")
                 time.sleep(1)
+            os.makedirs(CANARY_DIR, exist_ok=True)
             canary_file = os.path.join(CANARY_DIR, "!00_SystemConfig.docx")
+            if not os.path.exists(canary_file):
+                try:
+                    with open(canary_file, "w") as cf:
+                        cf.write("Aegis Decoy Canary Content\n")
+                except Exception:
+                    pass
             try:
                 # Tamper via external bash command to isolate process from dashboard
                 subprocess.run(["bash", "-c", f"echo 'MALICIOUS_CANARY_OVERWRITE_ATTEMPT' >> '{canary_file}'"], check=True)
