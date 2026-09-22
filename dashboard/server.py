@@ -559,7 +559,7 @@ done
         except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError):
             pass
 
-def run_server(port=8080):
+def run_server(port=8000):
     t = threading.Thread(target=log_tail_worker, daemon=True)
     t.start()
 
@@ -577,7 +577,7 @@ def run_server(port=8080):
         stop_aegis()
 
 if __name__ == "__main__":
-    port = 8080
+    port = 8000
     if len(sys.argv) > 1:
         port = int(sys.argv[1])
     run_server(port)
