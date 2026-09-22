@@ -266,9 +266,9 @@
         </section>
 
         <!-- Visual Analytics Grid: Oscilloscope Waveform & Byte Spectrum Analyzer -->
-        <section class="analytics-grid">
+        <section class="analytics-grid" id="section-oscilloscope">
             <!-- Multi-Channel Oscilloscope -->
-            <div class="panel-card">
+            <div class="panel-card oscilloscope-card">
                 <div class="panel-header">
                     <span class="panel-title">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-fg);"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
@@ -317,7 +317,7 @@
         </section>
 
         <!-- Decoy Tripwire Radar & Process State -->
-        <section class="analytics-grid">
+        <section class="analytics-grid" id="analytics-grid">
             <!-- Canary Radar -->
             <div class="panel-card">
                 <div class="panel-header">
@@ -336,7 +336,7 @@
             </div>
 
             <!-- Process Risk Tier State Machine -->
-            <div class="panel-card">
+            <div class="panel-card state-machine-card">
                 <div class="panel-header">
                     <span class="panel-title">
                         <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" aria-hidden="true">
@@ -373,7 +373,7 @@
         </section>
 
         <!-- Live Ring Buffer Telemetry Event Stream -->
-        <section class="log-table-container">
+        <section class="log-table-container" id="section-telemetry">
             <div class="panel-header" style="border: none; padding: 0;">
                 <span class="panel-title">
                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" aria-hidden="true">
@@ -413,7 +413,7 @@
         </section>
 
         <!-- Architectural Abstraction, Deep Tech & Benchmarks -->
-        <section class="panel-card">
+        <section class="panel-card" id="section-benchmark">
             <div class="tabs" role="tablist" aria-label="Subsystem inspection views">
                 <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="tab-benchmark" id="tabBtn-benchmark" onclick="switchTab('benchmark', this)">
                     <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" aria-hidden="true">
@@ -643,7 +643,7 @@ events         : RINGBUF (2 MB memory ring)</div>
             <div class="presenter-header">
                 <div class="presenter-header__left">
                     <span class="tag tag--status">
-                        Stage <span id="tourStepNum">1</span> of 6
+                        Stage <span id="tourStepNum">1</span> of <span id="tourStepTotal">6</span>
                     </span>
                     <h3 id="tourTitle" style="font-size: 1.125rem; color: var(--color-fg); font-weight: 500; letter-spacing: -0.018em; margin: 0; display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap;">
                         <span id="tourTitleMain">1. The core problem</span>
