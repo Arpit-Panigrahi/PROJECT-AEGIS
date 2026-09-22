@@ -16,14 +16,14 @@
             <!-- 1. Brand Identity -->
             <a href="#" class="nav-brand" aria-label="Project Aegis Home">
                 <div class="nav-brand__logo" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none">
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                         <path d="M9 12l2 2 4-4"/>
                     </svg>
                 </div>
                 <div class="nav-brand__meta">
                     <span class="nav-brand__name">Project Aegis</span>
-                    <span class="nav-brand__pill">Pillar 2 · eBPF LSM</span>
+                    <span class="nav-brand__badge">Pillar 2</span>
                 </div>
             </a>
 
@@ -38,41 +38,29 @@
 
             <!-- 3. Operational Telemetry & Action Controls -->
             <div class="nav-actions">
-                <!-- System Telemetry Meta Chip -->
-                <div class="nav-meta-chip" title="Active kernel release and system UTC clock">
-                    <span class="nav-meta-dot"></span>
-                    <span id="kernelRelease" class="nav-meta-item">6.6.87.2-WSL2</span>
-                    <span class="nav-meta-sep">/</span>
-                    <span id="liveClock" class="nav-meta-item">00:00:00 UTC</span>
-                </div>
-
                 <!-- Live Defender Status Badge -->
                 <div id="statusBadge" class="status-badge" title="Kernel defender status">
                     <span class="pulse-dot" aria-hidden="true"></span>
-                    <span id="statusText">Defender active</span>
+                    <span id="statusText">Active</span>
                 </div>
 
                 <!-- Mode Switcher -->
-                <button id="modeBtn" class="btn btn-outline nav-btn-mode" onclick="toggleMode()" title="Toggle enforcement mode">
-                    <span class="nav-btn-mode__label">Mode:</span>
-                    <strong id="modeDisplay" class="nav-btn-mode__val">Monitor</strong>
+                <button id="modeBtn" class="nav-mode-pill" onclick="toggleMode()" title="Toggle enforcement mode">
+                    <span class="nav-mode-pill__label">Mode</span>
+                    <strong id="modeDisplay" class="nav-mode-pill__val">Monitor</strong>
                 </button>
 
                 <!-- Guided Presentation Tour -->
-                <button id="tourBtn" class="btn nav-btn-tour" onclick="togglePresenterTour()" title="Guided Presentation Mode (Shortcut: P)">
-                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" aria-hidden="true">
+                <button id="tourBtn" class="btn btn--primary nav-tour-btn" onclick="togglePresenterTour()" title="Guided Presentation Mode (Shortcut: P)">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
                         <polygon points="5 3 19 12 5 21 5 3"/>
                     </svg>
                     <span>Guided Presentation Mode</span>
                 </button>
 
                 <!-- Sentinel Power Toggle Button -->
-                <button id="agentToggleBtn" class="btn btn-danger nav-btn-sentinel" onclick="toggleAgent()" title="Toggle sentinel daemon">
-                    <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none" aria-hidden="true">
-                        <path d="M18.36 6.64a9 9 0 1 1-12.73 0"/>
-                        <line x1="12" y1="2" x2="12" y2="12"/>
-                    </svg>
-                    <span>Stop Sentinel</span>
+                <button id="agentToggleBtn" class="btn btn-danger nav-power-btn" onclick="toggleAgent()" title="Toggle sentinel daemon">
+                    Stop Sentinel
                 </button>
             </div>
         </div>
@@ -83,6 +71,30 @@
         <!-- Hero Section & Tactical Simulation Deck -->
         <section class="section--hero" id="section-hero">
             <div class="hero__copy">
+                <!-- System Telemetry Ribbon (Promoted to Hero) -->
+                <div class="hero-telemetry-ribbon">
+                    <div class="hero-ribbon-item">
+                        <span class="ribbon-dot"></span>
+                        <span class="ribbon-label">Kernel:</span>
+                        <strong id="kernelRelease" class="ribbon-val">6.6.87.2-WSL2</strong>
+                    </div>
+                    <span class="ribbon-sep">/</span>
+                    <div class="hero-ribbon-item">
+                        <span class="ribbon-label">Clock:</span>
+                        <span id="liveClock" class="ribbon-val">00:00:00 UTC</span>
+                    </div>
+                    <span class="ribbon-sep">/</span>
+                    <div class="hero-ribbon-item">
+                        <span class="ribbon-label">Interception:</span>
+                        <span class="ribbon-val">2.4 μs (eBPF LSM)</span>
+                    </div>
+                    <span class="ribbon-sep">/</span>
+                    <div class="hero-ribbon-item">
+                        <span class="ribbon-label">Loss:</span>
+                        <span class="ribbon-val">0.0% (Zero files)</span>
+                    </div>
+                </div>
+
                 <h1 class="heading-display">
                     <span>Autonomous in-kernel defense</span>
                     <span class="heading-display__muted">Real-time ransomware neutralization spine<span class="accent-token">_</span></span>
