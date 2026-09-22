@@ -1317,136 +1317,6 @@ tbody tr:hover td {
   max-height: 280px;
 }
 
-.presenter-container {
-  max-width: var(--layout-max);
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-}
-
-/* 6-Stage Progress Indicator Bar */
-.tour-progress-strip {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 6px;
-  width: 100%;
-}
-
-.tour-progress-seg {
-  height: 3px;
-  background: rgba(253, 255, 240, 0.12);
-  border-radius: var(--radius-pill);
-  transition: background 0.3s ease, box-shadow 0.3s ease;
-}
-
-.tour-progress-seg.completed {
-  background: var(--color-status);
-}
-
-.tour-progress-seg.active {
-  background: var(--color-fg);
-  box-shadow: 0 0 8px rgba(253, 255, 240, 0.5);
-}
-
-.presenter-header__left {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  flex-wrap: wrap;
-}
-
-/* Focus Cue Card */
-.cue-box {
-  background: var(--color-surface-sunken);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-inner);
-  padding: 1rem 1.15rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-}
-
-.cue-box__header {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-size: var(--text-caption);
-  font-weight: 500;
-  color: var(--color-status);
-}
-
-.cue-box__header svg {
-  width: 13px;
-  height: 13px;
-  stroke: currentColor;
-  fill: none;
-}
-
-.cue-box p {
-  color: var(--color-fg);
-  font-size: 0.85rem;
-  line-height: 1.5;
-  font-weight: 400;
-}
-
-/* Architectural Specification & Review Card */
-.script-box {
-  background: rgba(253, 255, 240, 0.03);
-  border: 1px solid rgba(253, 255, 240, 0.16);
-  border-radius: var(--radius-inner);
-  padding: 1rem 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-  position: relative;
-}
-
-.script-box__header {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-size: var(--text-caption);
-  font-weight: 500;
-  color: var(--color-muted);
-}
-
-.script-box p {
-  color: var(--color-fg);
-  font-size: 0.95rem;
-  line-height: 1.62;
-  font-weight: 400;
-  letter-spacing: -0.005em;
-}
-
-/* Technical Proof Card */
-.tech-box {
-  background: var(--color-surface-sunken);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-inner);
-  padding: 1rem 1.15rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-}
-
-.tech-box__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: var(--text-caption);
-  font-weight: 500;
-  color: var(--color-muted);
-}
-
-.tech-box p {
-  color: var(--color-muted);
-  font-size: 0.8125rem;
-  font-family: var(--font-code);
-  line-height: 1.45;
-}
-
-
 /* =============================================================================
    15. FORENSIC INSPECTOR & MODAL DIALOGS
    ============================================================================= */
@@ -2484,11 +2354,113 @@ tbody tr:hover td {
 }
 
 /* Presentation HUD Focus Spotlight (Pulsing Hairline Ring) */
+@keyframes spotlightGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 1px var(--color-status), 0 0 16px rgba(0, 176, 147, 0.4) !important;
+  }
+  50% {
+    box-shadow: 0 0 0 2px var(--color-status), 0 0 32px rgba(0, 176, 147, 0.75) !important;
+  }
+}
+
+@keyframes spotlightGlowDanger {
+  0%, 100% {
+    box-shadow: 0 0 0 1px var(--color-accent), 0 0 16px rgba(232, 69, 60, 0.4) !important;
+  }
+  50% {
+    box-shadow: 0 0 0 2px var(--color-accent), 0 0 32px rgba(232, 69, 60, 0.75) !important;
+  }
+}
+
 .hud-spotlight-active {
   border-color: var(--color-status) !important;
-  box-shadow: 0 0 0 1px var(--color-status), 0 0 24px var(--color-status-glow) !important;
-  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  animation: spotlightGlow 2.4s infinite ease-in-out;
+  transition: border-color 0.4s ease;
+  scroll-margin-top: 100px;
 }
 
 .hud-spotlight-active.danger {
   border-color: var(--color-accent) !important;
+  animation: spotlightGlowDanger 2.4s infinite ease-in-out;
+}
+
+/* Page padding when presenter drawer is docked */
+body.presenter-drawer-open {
+  padding-bottom: 340px !important;
+  transition: padding-bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Progress Segment Interactive Hover */
+.tour-progress-seg {
+  cursor: pointer;
+  height: 4px;
+}
+
+.tour-progress-seg:hover {
+  background: rgba(253, 255, 240, 0.45);
+  transform: scaleY(1.4);
+}
+
+/* Navbar Presentation Button Active State */
+.nav-tour-btn.active {
+  background: rgba(0, 176, 147, 0.12) !important;
+  border-color: var(--color-status) !important;
+  color: var(--color-status) !important;
+  box-shadow: 0 0 12px var(--color-status-glow);
+}
+
+/* Pipeline Pulse Ripple Animation */
+@keyframes pipelinePulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(0, 176, 147, 0);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px var(--color-status-glow);
+    border-color: var(--color-status);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(0, 176, 147, 0);
+  }
+}
+
+.pipeline-node.pipeline-pulse {
+  animation: pipelinePulse 0.8s ease;
+}
+
+/* Responsive Presentation Drawer */
+@media (max-width: 1100px) {
+  .presenter-body {
+    grid-template-columns: 1fr 1fr;
+  }
+  .tech-box {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 768px) {
+  body.presenter-drawer-open {
+    padding-bottom: 480px !important;
+  }
+  .presenter-drawer {
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .presenter-body {
+    grid-template-columns: 1fr;
+  }
+  .tech-box {
+    grid-column: span 1;
+  }
+  .presenter-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .presenter-header__right {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

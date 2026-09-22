@@ -290,7 +290,7 @@
         <!-- Decoy Tripwire Radar & Process State -->
         <section class="analytics-grid" id="analytics-grid">
             <!-- Canary Radar -->
-            <div class="panel-card">
+            <div class="panel-card radar-card">
                 <div class="panel-header">
                     <span class="panel-title">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-fg);"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg>
@@ -544,12 +544,12 @@ events         : RINGBUF (2 MB memory ring)</div>
         <div class="presenter-container">
             <!-- 6-Stage Visual Progress Bar -->
             <div class="tour-progress-strip" id="tourProgressStrip">
-                <div class="tour-progress-seg active"></div>
-                <div class="tour-progress-seg"></div>
-                <div class="tour-progress-seg"></div>
-                <div class="tour-progress-seg"></div>
-                <div class="tour-progress-seg"></div>
-                <div class="tour-progress-seg"></div>
+                <div class="tour-progress-seg active" onclick="renderTourStep(0)" title="Module 1: In-Kernel VFS Interception vs Ring3 EDR" role="button" tabindex="0"></div>
+                <div class="tour-progress-seg" onclick="renderTourStep(1)" title="Module 2: Zero-Trust Decoy Canaries & Spatial Tripwires" role="button" tabindex="0"></div>
+                <div class="tour-progress-seg" onclick="renderTourStep(2)" title="Module 3: Real-Time Byte Entropy & Distribution" role="button" tabindex="0"></div>
+                <div class="tour-progress-seg" onclick="renderTourStep(3)" title="Module 4: Exponential Risk Decay & Workload Tolerance" role="button" tabindex="0"></div>
+                <div class="tour-progress-seg" onclick="renderTourStep(4)" title="Module 5: In-Kernel Active Neutralization & Lockdown" role="button" tabindex="0"></div>
+                <div class="tour-progress-seg" onclick="renderTourStep(5)" title="Module 6: Forensic Inspection & Comparative Benchmark" role="button" tabindex="0"></div>
             </div>
 
             <div class="presenter-header">
@@ -1899,7 +1899,21 @@ events         : RINGBUF (2 MB memory ring)</div>
             if (target) {
                 target.classList.add("hud-spotlight-active");
                 if (isDanger) target.classList.add("danger");
-                target.scrollIntoView({ behavior: "smooth", block: "center" });
+
+                // Smooth scroll calculation accounting for top fixed header and bottom presenter drawer
+                const drawer = document.getElementById("presenterDrawer");
+                const drawerHeight = (drawer && isTourOpen) ? drawer.offsetHeight : 0;
+                const headerHeight = 70;
+                const rect = target.getBoundingClientRect();
+                const absoluteTop = window.pageYOffset + rect.top;
+                const targetHeight = rect.height;
+                const availableHeight = window.innerHeight - drawerHeight - headerHeight;
+                const scrollToY = Math.max(0, absoluteTop - headerHeight - Math.max(20, (availableHeight - targetHeight) / 2));
+                if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+                    window.scrollTo({ top: scrollToY, behavior: "smooth" });
+                } else if (typeof target.scrollIntoView === 'function') {
+                    target.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
             }
         }
 
@@ -1918,13 +1932,19 @@ events         : RINGBUF (2 MB memory ring)</div>
                 actionLabel: "Inspect In-Kernel Pipeline State",
                 actionFn: () => {
                     setSpotlight(".pipeline-card");
-                    const pipeIo = document.getElementById("pipe-io");
-                    if (pipeIo) pipeIo.classList.add("active");
+                    // Ripple pipeline nodes in sequence to demonstrate in-kernel stage progression
+                    const nodes = document.querySelectorAll(".pipeline-node");
+                    nodes.forEach((node, idx) => {
+                        setTimeout(() => {
+                            node.classList.add("pipeline-pulse");
+                            setTimeout(() => node.classList.remove("pipeline-pulse"), 800);
+                        }, idx * 180);
+                    });
                 }
             },
             {
                 num: 2,
-                targetSelector: ".radar-container",
+                targetSelector: ".radar-card",
                 titleMain: "2. Zero-Trust Decoy Canaries & Spatial Tripwires",
                 titleSub: "O(1) Kernel Inode Lookup & Attacker Pre-Emption",
                 cue: "Inspect the 360° tactical decoy radar displaying 5 active high-priority canaries seeded across filesystem paths.",
@@ -1932,7 +1952,7 @@ events         : RINGBUF (2 MB memory ring)</div>
                 tech: "O(1) in-kernel lookup via bpf_map_lookup_elem(&canary_set, &fkey) on inode/dev pairs inside vfs_write, rename, and unlink LSM hooks.",
                 actionLabel: "Simulate Decoy Tripwire Tampering",
                 actionFn: () => {
-                    setSpotlight(".radar-container", true);
+                    setSpotlight(".radar-card", true);
                     triggerAction("simulate_canary");
                 }
             },
@@ -1980,7 +2000,7 @@ events         : RINGBUF (2 MB memory ring)</div>
             },
             {
                 num: 6,
-                targetSelector: ".panel-card",
+                targetSelector: "#section-benchmark",
                 titleMain: "6. Forensic Inspection & Comparative Benchmark",
                 titleSub: "Subsystem Verification vs CrowdStrike & Microsoft Defender",
                 cue: "Inspect the architectural benchmark matrix and the In-Kernel Forensic Hex Inspector modal dialog.",
@@ -1988,7 +2008,7 @@ events         : RINGBUF (2 MB memory ring)</div>
                 tech: "Lockless 2 MB ring buffer (bpf_ringbuf_output). Sub-microsecond payload capture, offset address mapping, and zero memory corruption risk.",
                 actionLabel: "Open Forensic Hex Inspector",
                 actionFn: () => {
-                    setSpotlight(".panel-card");
+                    setSpotlight("#section-benchmark");
                     switchTab("benchmark");
                     openForensicModal({ ino: 41, entropy: 7.99, comm: "encryptor_attack", pid: 4427 });
                 }
@@ -1998,9 +2018,40 @@ events         : RINGBUF (2 MB memory ring)</div>
         function togglePresenterTour() {
             isTourOpen = !isTourOpen;
             const drawer = document.getElementById("presenterDrawer");
+            const tourBtn = document.getElementById("tourBtn");
+
             if (drawer) {
                 drawer.style.display = isTourOpen ? "block" : "none";
             }
+            if (typeof document !== 'undefined' && document.body && document.body.classList) {
+                if (isTourOpen) {
+                    document.body.classList.add("presenter-drawer-open");
+                } else {
+                    document.body.classList.remove("presenter-drawer-open");
+                }
+            }
+
+            if (tourBtn) {
+                if (isTourOpen) {
+                    tourBtn.classList.add("active");
+                    tourBtn.innerHTML = `
+                        <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                        <span>Exit Presentation</span>
+                    `;
+                } else {
+                    tourBtn.classList.remove("active");
+                    tourBtn.innerHTML = `
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+                            <polygon points="5 3 19 12 5 21 5 3"/>
+                        </svg>
+                        <span>Presentation Mode</span>
+                    `;
+                }
+            }
+
             if (isTourOpen) {
                 renderTourStep(currentTourStep);
             } else {
@@ -2016,9 +2067,9 @@ events         : RINGBUF (2 MB memory ring)</div>
             // Update Progress Segments
             document.querySelectorAll(".tour-progress-seg").forEach((seg, idx) => {
                 seg.classList.remove("active", "completed");
-                if (idx < stepIdx) {
+                if (idx < currentTourStep) {
                     seg.classList.add("completed");
-                } else if (idx === stepIdx) {
+                } else if (idx === currentTourStep) {
                     seg.classList.add("active");
                 }
             });
@@ -2057,13 +2108,13 @@ events         : RINGBUF (2 MB memory ring)</div>
             }
 
             const prevBtn = document.getElementById("tourPrevBtn");
-            if (prevBtn) prevBtn.disabled = (stepIdx === 0);
+            if (prevBtn) prevBtn.disabled = (currentTourStep === 0);
 
             const nextBtn = document.getElementById("tourNextBtn");
             if (nextBtn) {
-                const isLast = (stepIdx === TOUR_STAGES.length - 1);
+                const isLast = (currentTourStep === TOUR_STAGES.length - 1);
                 nextBtn.innerHTML = `
-                    <span>${isLast ? "Finish tour" : "Next stage"}</span>
+                    <span>${isLast ? "Finish walkthrough" : "Next module"}</span>
                     <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" aria-hidden="true">
                         <polyline points="9 18 15 12 9 6"/>
                     </svg>
@@ -2081,6 +2132,7 @@ events         : RINGBUF (2 MB memory ring)</div>
                 renderTourStep(currentTourStep + 1);
             } else {
                 togglePresenterTour();
+                showActionToast("Architecture review walkthrough completed.", true);
             }
         }
 
@@ -2097,29 +2149,50 @@ events         : RINGBUF (2 MB memory ring)</div>
             }
         }
 
-        // Keyboard Shortcuts for Presentation Tour
+        // Global Keyboard Shortcuts (Modal, Presentation Walkthrough, Hotkeys)
         document.addEventListener('keydown', function(e) {
-            // If modal is open, Escape closes modal
+            // Ignore key events when user is in input/textarea/select
+            const tag = (document.activeElement && document.activeElement.tagName) || '';
+            if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
             const modal = document.getElementById("forensicModal");
-            if (modal && modal.classList.contains("open") && e.key === "Escape") {
-                closeModal();
+            const isModalOpen = modal && modal.classList.contains("open");
+
+            // Escape key handling
+            if (e.key === "Escape") {
+                if (isModalOpen) {
+                    closeModal();
+                    return;
+                }
+                if (isTourOpen) {
+                    togglePresenterTour();
+                    return;
+                }
+            }
+
+            // 'P' or 'p' key toggles Presentation Walkthrough Mode
+            if (e.key === "p" || e.key === "P") {
+                if (isModalOpen) return;
+                e.preventDefault();
+                togglePresenterTour();
                 return;
             }
 
-            if (!isTourOpen) return;
-            if (e.key === "ArrowRight") {
-                nextTourStep();
-            } else if (e.key === "ArrowLeft") {
-                prevTourStep();
-            } else if (e.key === "Escape") {
-                togglePresenterTour();
-            } else if (e.key === " " || e.key === "Enter") {
-                // Space or Enter executes active stage action
-                if (document.activeElement && (document.activeElement.tagName === "BUTTON" || document.activeElement.tagName === "INPUT")) {
-                    return;
+            // Navigation when Presentation Walkthrough is active
+            if (isTourOpen) {
+                if (e.key === "ArrowRight" || e.key === "PageDown") {
+                    e.preventDefault();
+                    nextTourStep();
+                } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
+                    e.preventDefault();
+                    prevTourStep();
+                } else if (e.key === " " || e.key === "Enter") {
+                    e.preventDefault();
+                    executeTourAction();
+                } else if (e.key >= "1" && e.key <= "6") {
+                    e.preventDefault();
+                    renderTourStep(parseInt(e.key, 10) - 1);
                 }
-                e.preventDefault();
-                executeTourAction();
             }
         });
 
