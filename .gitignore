@@ -20,6 +20,7 @@ testbed/corpus_root/
 # Editor & OS files
 .DS_Store
 Thumbs.db
+*.backup.pptx
 .vscode/
 .idea/
 *.swp
