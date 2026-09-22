@@ -969,7 +969,7 @@ main {
 
 .canvas-container {
   width: 100%;
-  height: 220px;
+  height: 260px;
   position: relative;
   background: var(--color-surface-sunken);
   border-radius: var(--radius-inner);
@@ -985,7 +985,7 @@ main {
 
 .radar-container {
   width: 100%;
-  height: 240px;
+  height: 280px;
   position: relative;
   display: flex;
   align-items: center;
@@ -999,8 +999,6 @@ main {
 .radar-container canvas {
   width: 100%;
   height: 100%;
-  max-width: 420px;
-  max-height: 240px;
   display: block;
 }
 

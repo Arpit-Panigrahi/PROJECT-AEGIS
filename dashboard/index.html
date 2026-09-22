@@ -773,15 +773,15 @@ events         : RINGBUF (2 MB memory ring)</div>
             }
         });
 
-        // Canvas 1: Live Oscilloscope (60 FPS, Closed Palette, Smooth Half-Life Decay)
+        // Canvas 1: Ultra-HD Live Oscilloscope (60 FPS, Liquid Spline Curves, High-DPI Phosphor Reticle)
         const oscCanvas = document.getElementById("oscilloCanvas");
         const oscCtx = oscCanvas.getContext("2d");
-        const OSCILLO_POINTS = 120;
-        const historyEntropy = new Float32Array(OSCILLO_POINTS).fill(3.2);
+        const OSCILLO_POINTS = 140;
+        const historyEntropy = new Float32Array(OSCILLO_POINTS).fill(0.0);
         const historyRisk = new Float32Array(OSCILLO_POINTS).fill(0.0);
 
-        let liveEntropy = 3.2;
-        let targetEntropy = 3.2;
+        let liveEntropy = 0.0;
+        let targetEntropy = 0.0;
         let liveRisk = 0.0;
         let targetRisk = 0.0;
         let lastOscFrameTime = performance.now();
@@ -798,23 +798,22 @@ events         : RINGBUF (2 MB memory ring)</div>
             // Mathematical Exponential Half-Life Decay (tau = 4.0s) matching Aegis kernel
             const decay = Math.pow(0.5, dt / 4.0);
             targetRisk *= decay;
-            // Relax entropy gently back to benign baseline (3.2 bits)
-            targetEntropy += (3.2 - targetEntropy) * Math.min(1.0, 1.2 * dt);
+            // Relax entropy gently down to 0.0 baseline when idle
+            targetEntropy += (0.0 - targetEntropy) * Math.min(1.0, 0.5 * dt);
 
             // Smooth continuous lerp towards targets
             liveEntropy += (targetEntropy - liveEntropy) * Math.min(1.0, 14.0 * dt);
             liveRisk += (targetRisk - liveRisk) * Math.min(1.0, 10.0 * dt);
 
-            // Shift ring buffer every 250ms (4 samples/sec across 30-sec window)
+            // Shift ring buffer every 200ms (5 samples/sec across 28-sec window)
             oscAccumulator += dt;
-            if (oscAccumulator >= 0.25) {
-                oscAccumulator -= 0.25;
-                const ambientJitter = 0;
+            if (oscAccumulator >= 0.20) {
+                oscAccumulator -= 0.20;
                 for (let i = 0; i < OSCILLO_POINTS - 1; i++) {
                     historyEntropy[i] = historyEntropy[i + 1];
                     historyRisk[i] = historyRisk[i + 1];
                 }
-                historyEntropy[OSCILLO_POINTS - 1] = Math.max(0, liveEntropy + ambientJitter);
+                historyEntropy[OSCILLO_POINTS - 1] = Math.max(0, liveEntropy);
                 historyRisk[OSCILLO_POINTS - 1] = Math.max(0, liveRisk);
             }
 
@@ -822,14 +821,14 @@ events         : RINGBUF (2 MB memory ring)</div>
             const { w, h } = setupCanvasDPI(oscCanvas, oscCtx);
             oscCtx.clearRect(0, 0, w, h);
 
-            const padLeft = 40;
-            const padRight = 36;
-            const padTop = 16;
-            const padBot = 18;
+            const padLeft = 44;
+            const padRight = 40;
+            const padTop = 22;
+            const padBot = 22;
             const plotW = Math.max(10, w - padLeft - padRight);
             const plotH = Math.max(10, h - padTop - padBot);
 
-            // Background subtle gridlines & Dual Y-Axes in --color-border
+            // Background phosphor gridlines & Dual Y-Axes in --color-border
             oscCtx.lineWidth = 1;
             oscCtx.strokeStyle = 'rgba(253, 255, 240, 0.07)';
 
@@ -842,121 +841,153 @@ events         : RINGBUF (2 MB memory ring)</div>
 
                 // Left Y-Axis: Entropy (bits/byte) in warm cream
                 oscCtx.font = '9px Inter, sans-serif';
-                oscCtx.fillStyle = 'rgba(253, 255, 240, 0.35)';
+                oscCtx.fillStyle = 'rgba(253, 255, 240, 0.40)';
                 oscCtx.textAlign = 'right';
                 oscCtx.textBaseline = 'middle';
-                oscCtx.fillText(b.toFixed(1), padLeft - 6, y);
+                oscCtx.fillText(b.toFixed(1), padLeft - 8, y);
 
                 // Right Y-Axis: Risk Score (0-100) in teal
                 const riskVal = Math.round((b / 8.0) * 100);
-                oscCtx.fillStyle = 'rgba(0, 176, 147, 0.55)';
+                oscCtx.fillStyle = 'rgba(0, 176, 147, 0.60)';
                 oscCtx.textAlign = 'left';
-                oscCtx.fillText(riskVal.toString(), w - padRight + 6, y);
+                oscCtx.fillText(riskVal.toString(), w - padRight + 8, y);
             }
 
-            // Vertical time gridlines (6 divisions)
+            // Intermediate minor tick marks on axes
+            for (let b = 1.0; b < 8.0; b += 2.0) {
+                const y = Math.round(padTop + plotH * (1 - b / 8.0)) + 0.5;
+                oscCtx.strokeStyle = 'rgba(253, 255, 240, 0.035)';
+                oscCtx.beginPath();
+                oscCtx.moveTo(padLeft, y);
+                oscCtx.lineTo(w - padRight, y);
+                oscCtx.stroke();
+            }
+
+            // Vertical time gridlines (6 divisions: -25s, -20s, -15s, -10s, -5s, LIVE)
+            const timeLabels = ['-25s', '-20s', '-15s', '-10s', '-5s'];
             for (let s = 1; s < 6; s++) {
                 const x = Math.round(padLeft + (s / 6) * plotW) + 0.5;
+                oscCtx.strokeStyle = 'rgba(253, 255, 240, 0.05)';
                 oscCtx.beginPath();
                 oscCtx.moveTo(x, padTop);
                 oscCtx.lineTo(x, h - padBot);
                 oscCtx.stroke();
+
+                oscCtx.font = '8px Inter, sans-serif';
+                oscCtx.fillStyle = 'rgba(253, 255, 240, 0.25)';
+                oscCtx.textAlign = 'center';
+                oscCtx.textBaseline = 'top';
+                oscCtx.fillText(timeLabels[s - 1], x, h - padBot + 6);
             }
 
             // Critical 7.80 Baseline (subtle dashed hairline in coral accent)
             const threshY = padTop + plotH * (1 - 7.80 / 8.0);
             oscCtx.save();
-            oscCtx.setLineDash([5, 4]);
-            oscCtx.strokeStyle = 'rgba(232, 69, 60, 0.45)';
+            oscCtx.setLineDash([4, 4]);
+            oscCtx.strokeStyle = 'rgba(232, 69, 60, 0.55)';
             oscCtx.beginPath();
             oscCtx.moveTo(padLeft, threshY);
             oscCtx.lineTo(w - padRight, threshY);
             oscCtx.stroke();
-            oscCtx.fillStyle = 'rgba(232, 69, 60, 0.75)';
+            oscCtx.fillStyle = 'rgba(232, 69, 60, 0.85)';
             oscCtx.font = '9px Inter, sans-serif';
             oscCtx.textAlign = 'right';
             oscCtx.textBaseline = 'bottom';
-            oscCtx.fillText('7.80 Critical threshold', w - padRight - 8, threshY - 2);
+            oscCtx.fillText('7.80 Critical threshold (Miller-Madow H_MM)', w - padRight - 8, threshY - 3);
             oscCtx.restore();
 
-            // Risk Trajectory Area Fill (Teal Gradient)
-            oscCtx.beginPath();
-            oscCtx.moveTo(padLeft, h - padBot);
+            // Coordinate generation for smooth curves
+            const riskPoints = [];
+            const entropyPoints = [];
             for (let i = 0; i < OSCILLO_POINTS; i++) {
                 const x = padLeft + (i / (OSCILLO_POINTS - 1)) * plotW;
-                const y = padTop + plotH * (1 - Math.min(100, Math.max(0, historyRisk[i])) / 100.0);
-                oscCtx.lineTo(x, y);
+                const yr = padTop + plotH * (1 - Math.min(100, Math.max(0, historyRisk[i])) / 100.0);
+                const ye = padTop + plotH * (1 - Math.min(8.0, Math.max(0, historyEntropy[i])) / 8.0);
+                riskPoints.push({ x, y: yr });
+                entropyPoints.push({ x, y: ye });
             }
+
+            // Helper to render smooth spline path using quadratic curves
+            function buildSmoothPath(ctx, pts) {
+                if (pts.length < 2) return;
+                ctx.moveTo(pts[0].x, pts[0].y);
+                for (let i = 0; i < pts.length - 1; i++) {
+                    const xc = (pts[i].x + pts[i + 1].x) / 2;
+                    const yc = (pts[i].y + pts[i + 1].y) / 2;
+                    ctx.quadraticCurveTo(pts[i].x, pts[i].y, xc, yc);
+                }
+                ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y);
+            }
+
+            // 1. Risk Curve Area Fill (Teal Gradient)
+            oscCtx.beginPath();
+            oscCtx.moveTo(padLeft, h - padBot);
+            buildSmoothPath(oscCtx, riskPoints);
             oscCtx.lineTo(w - padRight, h - padBot);
             const riskGrad = oscCtx.createLinearGradient(0, padTop, 0, h - padBot);
-            riskGrad.addColorStop(0, 'rgba(0, 176, 147, 0.16)');
+            riskGrad.addColorStop(0, 'rgba(0, 176, 147, 0.18)');
             riskGrad.addColorStop(1, 'rgba(0, 176, 147, 0.0)');
             oscCtx.fillStyle = riskGrad;
             oscCtx.fill();
 
-            // Risk curve stroke
+            // Risk Curve Core Stroke
             oscCtx.beginPath();
-            for (let i = 0; i < OSCILLO_POINTS; i++) {
-                const x = padLeft + (i / (OSCILLO_POINTS - 1)) * plotW;
-                const y = padTop + plotH * (1 - Math.min(100, Math.max(0, historyRisk[i])) / 100.0);
-                if (i === 0) oscCtx.moveTo(x, y);
-                else oscCtx.lineTo(x, y);
-            }
-            oscCtx.strokeStyle = 'rgba(0, 176, 147, 0.85)';
+            buildSmoothPath(oscCtx, riskPoints);
+            oscCtx.strokeStyle = 'rgba(0, 176, 147, 0.88)';
             oscCtx.lineWidth = 1.5;
             oscCtx.stroke();
 
-            // Entropy Waveform Area Fill
+            // 2. Entropy Waveform Area Fill
             const isAlarm = liveEntropy >= 7.80;
             oscCtx.beginPath();
             oscCtx.moveTo(padLeft, h - padBot);
-            for (let i = 0; i < OSCILLO_POINTS; i++) {
-                const x = padLeft + (i / (OSCILLO_POINTS - 1)) * plotW;
-                const y = padTop + plotH * (1 - Math.min(8.0, Math.max(0, historyEntropy[i])) / 8.0);
-                oscCtx.lineTo(x, y);
-            }
+            buildSmoothPath(oscCtx, entropyPoints);
             oscCtx.lineTo(w - padRight, h - padBot);
             const entGrad = oscCtx.createLinearGradient(0, padTop, 0, h - padBot);
             if (isAlarm) {
-                entGrad.addColorStop(0, 'rgba(232, 69, 60, 0.20)');
+                entGrad.addColorStop(0, 'rgba(232, 69, 60, 0.25)');
                 entGrad.addColorStop(1, 'rgba(232, 69, 60, 0.0)');
             } else {
-                entGrad.addColorStop(0, 'rgba(253, 255, 240, 0.08)');
+                entGrad.addColorStop(0, 'rgba(253, 255, 240, 0.10)');
                 entGrad.addColorStop(1, 'rgba(253, 255, 240, 0.0)');
             }
             oscCtx.fillStyle = entGrad;
             oscCtx.fill();
 
-            // Entropy Waveform Stroke: Warm cream (#fdfff0) with coral accent (#e8453c) for spikes >= 7.80
-            for (let i = 1; i < OSCILLO_POINTS; i++) {
-                const x1 = padLeft + ((i - 1) / (OSCILLO_POINTS - 1)) * plotW;
-                const y1 = padTop + plotH * (1 - Math.min(8.0, Math.max(0, historyEntropy[i - 1])) / 8.0);
-                const x2 = padLeft + (i / (OSCILLO_POINTS - 1)) * plotW;
-                const y2 = padTop + plotH * (1 - Math.min(8.0, Math.max(0, historyEntropy[i])) / 8.0);
+            // Entropy Waveform Stroke: Dual pass (glow + sharp line)
+            // Soft outer glow stroke
+            oscCtx.beginPath();
+            buildSmoothPath(oscCtx, entropyPoints);
+            oscCtx.strokeStyle = isAlarm ? 'rgba(232, 69, 60, 0.35)' : 'rgba(253, 255, 240, 0.18)';
+            oscCtx.lineWidth = isAlarm ? 4.0 : 3.0;
+            oscCtx.stroke();
 
-                const isSpike = (historyEntropy[i - 1] >= 7.80 || historyEntropy[i] >= 7.80);
-                oscCtx.beginPath();
-                oscCtx.moveTo(x1, y1);
-                oscCtx.lineTo(x2, y2);
-                oscCtx.strokeStyle = isSpike ? '#e8453c' : '#fdfff0';
-                oscCtx.lineWidth = isSpike ? 2.2 : 1.75;
-                oscCtx.stroke();
-            }
+            // Razor-sharp core stroke
+            oscCtx.beginPath();
+            buildSmoothPath(oscCtx, entropyPoints);
+            oscCtx.strokeStyle = isAlarm ? '#e8453c' : '#fdfff0';
+            oscCtx.lineWidth = isAlarm ? 2.0 : 1.6;
+            oscCtx.stroke();
 
-            // Lead Probe Point with pulsing outer glow
-            const lastX = w - padRight;
-            const lastY = padTop + plotH * (1 - Math.min(8.0, Math.max(0, historyEntropy[OSCILLO_POINTS - 1])) / 8.0);
-            const isLastSpike = historyEntropy[OSCILLO_POINTS - 1] >= 7.80;
+            // Lead Probe Head with pulsating concentric radar rings
+            const lastPt = entropyPoints[entropyPoints.length - 1];
+            const pulse = 1.0 + 0.35 * Math.sin(now * 0.008);
 
             oscCtx.beginPath();
-            oscCtx.arc(lastX, lastY, 6, 0, Math.PI * 2);
-            oscCtx.fillStyle = isLastSpike ? 'rgba(232, 69, 60, 0.3)' : 'rgba(253, 255, 240, 0.2)';
+            oscCtx.arc(lastPt.x, lastPt.y, 7 * pulse, 0, Math.PI * 2);
+            oscCtx.fillStyle = isAlarm ? 'rgba(232, 69, 60, 0.25)' : 'rgba(253, 255, 240, 0.18)';
             oscCtx.fill();
 
             oscCtx.beginPath();
-            oscCtx.arc(lastX, lastY, 3, 0, Math.PI * 2);
-            oscCtx.fillStyle = isLastSpike ? '#e8453c' : '#fdfff0';
+            oscCtx.arc(lastPt.x, lastPt.y, 3, 0, Math.PI * 2);
+            oscCtx.fillStyle = isAlarm ? '#e8453c' : '#fdfff0';
             oscCtx.fill();
+
+            // In-Canvas Real-Time HUD Overlay Readout
+            oscCtx.font = '9px Inter, sans-serif';
+            oscCtx.fillStyle = 'rgba(253, 255, 240, 0.45)';
+            oscCtx.textAlign = 'left';
+            oscCtx.fillText(`CH1: ENTROPY ${liveEntropy.toFixed(2)} b/B  |  CH2: RISK ${liveRisk.toFixed(1)}/100  |  τ=4.0s`, padLeft + 6, padTop - 7);
 
             // FPS Counter in Inter with tabular-nums
             frameCount++;
@@ -971,10 +1002,11 @@ events         : RINGBUF (2 MB memory ring)</div>
             requestAnimationFrame(drawOscilloscope);
         }
 
-        // Canvas 2: 256-Bin Spectrum Analyzer (Pixel-Aligned Hairline Bars, Closed Palette)
+        // Canvas 2: Ultra-HD 256-Bin Spectrum Analyzer (Hairline Bars, Peak Hold, Phosphor Decay)
         const specCanvas = document.getElementById("spectrumCanvas");
         const specCtx = specCanvas.getContext("2d");
         const byteSpectrum = new Float32Array(256);
+        const peakSpectrum = new Float32Array(256);
         let lastSpecTime = performance.now();
 
         function drawSpectrum(timestamp) {
@@ -983,18 +1015,23 @@ events         : RINGBUF (2 MB memory ring)</div>
             const dt = Math.min(0.1, (now - lastSpecTime) / 1000);
             lastSpecTime = now;
 
-            // Exponential decay math (half-life approx 0.3s)
-            const decay = Math.exp(-2.5 * dt);
+            // Exponential decay math (half-life approx 0.35s)
+            const decay = Math.exp(-2.2 * dt);
             for (let i = 0; i < 256; i++) {
                 byteSpectrum[i] *= decay;
+                if (byteSpectrum[i] > peakSpectrum[i]) {
+                    peakSpectrum[i] = byteSpectrum[i];
+                } else {
+                    peakSpectrum[i] = Math.max(0, peakSpectrum[i] - 12.0 * dt);
+                }
             }
 
             const { w, h } = setupCanvasDPI(specCanvas, specCtx);
             specCtx.clearRect(0, 0, w, h);
 
-            const padX = 8;
-            const padTop = 20;
-            const padBot = 16;
+            const padX = 10;
+            const padTop = 22;
+            const padBot = 18;
             const plotW = Math.max(10, w - padX * 2);
             const plotH = Math.max(10, h - padTop - padBot);
             const barW = plotW / 256;
@@ -1014,12 +1051,12 @@ events         : RINGBUF (2 MB memory ring)</div>
             const xAsciiStart = padX + 32 * barW;
             const xAsciiEnd = padX + 127 * barW;
 
-            specCtx.fillStyle = 'rgba(253, 255, 240, 0.025)';
+            specCtx.fillStyle = 'rgba(253, 255, 240, 0.03)';
             specCtx.fillRect(xAsciiStart, padTop, xAsciiEnd - xAsciiStart, plotH);
 
             specCtx.save();
             specCtx.setLineDash([3, 3]);
-            specCtx.strokeStyle = 'rgba(253, 255, 240, 0.18)';
+            specCtx.strokeStyle = 'rgba(253, 255, 240, 0.20)';
             specCtx.beginPath();
             specCtx.moveTo(xAsciiStart, padTop);
             specCtx.lineTo(xAsciiStart, h - padBot);
@@ -1027,6 +1064,11 @@ events         : RINGBUF (2 MB memory ring)</div>
             specCtx.lineTo(xAsciiEnd, h - padBot);
             specCtx.stroke();
             specCtx.restore();
+
+            specCtx.font = '9px Inter, sans-serif';
+            specCtx.fillStyle = 'rgba(253, 255, 240, 0.45)';
+            specCtx.textAlign = 'center';
+            specCtx.fillText('ASCII plaintext window (0x20..0x7E)', (xAsciiStart + xAsciiEnd) / 2, padTop - 7);
 
             // Real-time live stats overlay in top right computed from byte frequency histogram
             let totalPower = 0;
@@ -1038,7 +1080,7 @@ events         : RINGBUF (2 MB memory ring)</div>
             const asciiPct = totalPower > 0.05 ? ((asciiPower / totalPower) * 100).toFixed(1) : (liveEntropy > 0 ? "88.6" : "0.0");
             specCtx.textAlign = 'right';
             specCtx.fillStyle = 'rgba(253, 255, 240, 0.5)';
-            specCtx.fillText(`Entropy: ${liveEntropy.toFixed(2)} bits | ASCII: ${asciiPct}%`, w - padX - 4, padTop - 6);
+            specCtx.fillText(`Entropy: ${liveEntropy.toFixed(2)} bits | ASCII: ${asciiPct}%`, w - padX - 4, padTop - 7);
 
             // 256 Hairline Bars with pixel-aligned coordinates
             for (let i = 0; i < 256; i++) {
@@ -1061,6 +1103,14 @@ events         : RINGBUF (2 MB memory ring)</div>
                 }
 
                 specCtx.fillRect(Math.round(x), Math.round(y), Math.max(1, Math.round(barW) - 0.5), Math.round(barH));
+
+                // Peak hold indicator dot
+                if (peakSpectrum[i] > 1.0) {
+                    const peakH = Math.min(plotH, (peakSpectrum[i] / 35.0) * plotH);
+                    const peakY = (h - padBot) - peakH - 1.5;
+                    specCtx.fillStyle = isHighEntropyNoise ? 'rgba(232, 69, 60, 0.85)' : 'rgba(253, 255, 240, 0.75)';
+                    specCtx.fillRect(Math.round(x), Math.round(peakY), Math.max(1, Math.round(barW) - 0.5), 1.5);
+                }
             }
 
             // Baseline hairline
@@ -1074,17 +1124,17 @@ events         : RINGBUF (2 MB memory ring)</div>
             requestAnimationFrame(drawSpectrum);
         }
 
-        // Canvas 3: Decoy Canary Spatial Radar (Surgical Tactical PPI Radar, Closed Palette)
+        // Canvas 3: Ultra-HD Tactical Decoy Canary Radar (Plan Position Indicator PPI with Auto-Rearm)
         const radarCanvas = document.getElementById("radarCanvas");
         const radarCtx = radarCanvas.getContext("2d");
         let radarAngle = 0;
 
         const canaryPoints = [
-            { name: "!00_SystemConfig.docx", angle: 0.40, dist: 0.72, breached: false, breachedAt: 0 },
-            { name: "00_TaxReturn_2026.pdf", angle: 1.60, dist: 0.58, breached: false, breachedAt: 0 },
-            { name: "_0_SecretKeys.kdbx", angle: 2.80, dist: 0.76, breached: false, breachedAt: 0 },
-            { name: "0_CorporateLedger.xlsx", angle: 4.10, dist: 0.62, breached: false, breachedAt: 0 },
-            { name: "!_RootVault.pem", angle: 5.30, dist: 0.72, breached: false, breachedAt: 0 }
+            { name: "!00_SystemConfig.docx", angle: 0.40, dist: 0.70, breached: false, breachedAt: 0, phosphor: 0 },
+            { name: "00_TaxReturn_2026.pdf", angle: 1.60, dist: 0.58, breached: false, breachedAt: 0, phosphor: 0 },
+            { name: "_0_SecretKeys.kdbx", angle: 2.80, dist: 0.76, breached: false, breachedAt: 0, phosphor: 0 },
+            { name: "0_CorporateLedger.xlsx", angle: 4.10, dist: 0.62, breached: false, breachedAt: 0, phosphor: 0 },
+            { name: "!_RootVault.pem", angle: 5.30, dist: 0.72, breached: false, breachedAt: 0, phosphor: 0 }
         ];
 
         let lastRadarTime = performance.now();
@@ -1100,11 +1150,11 @@ events         : RINGBUF (2 MB memory ring)</div>
 
             const cx = w / 2;
             const cy = h / 2;
-            const radius = Math.min(cx, cy) - 24;
+            const radius = Math.min(cx, cy) - 28;
 
-            // Concentric range rings in --color-border
+            // 1. Concentric Range Rings (0.33R, 0.66R, 1.00R)
             radarCtx.lineWidth = 1;
-            radarCtx.strokeStyle = 'rgba(253, 255, 240, 0.12)';
+            radarCtx.strokeStyle = 'rgba(253, 255, 240, 0.10)';
             const rings = [0.33, 0.66, 1.0];
             rings.forEach(rFrac => {
                 radarCtx.beginPath();
@@ -1112,43 +1162,66 @@ events         : RINGBUF (2 MB memory ring)</div>
                 radarCtx.stroke();
             });
 
-            // Crosshairs & 45-degree tactical reference lines
+            // Minor distance tick marks along cardinal axes
+            radarCtx.strokeStyle = 'rgba(253, 255, 240, 0.16)';
+            for (let frac = 0.1; frac <= 0.9; frac += 0.1) {
+                const r = radius * frac;
+                radarCtx.beginPath();
+                // Horizontal ticks
+                radarCtx.moveTo(cx - r, cy - 2); radarCtx.lineTo(cx - r, cy + 2);
+                radarCtx.moveTo(cx + r, cy - 2); radarCtx.lineTo(cx + r, cy + 2);
+                // Vertical ticks
+                radarCtx.moveTo(cx - 2, cy - r); radarCtx.lineTo(cx + 2, cy - r);
+                radarCtx.moveTo(cx - 2, cy + r); radarCtx.lineTo(cx + 2, cy + r);
+                radarCtx.stroke();
+            }
+
+            // 2. Cardinal Crosshairs & 30-Degree Tactical Radial Spokes
+            radarCtx.strokeStyle = 'rgba(253, 255, 240, 0.08)';
             radarCtx.beginPath();
-            radarCtx.moveTo(cx - radius, cy);
-            radarCtx.lineTo(cx + radius, cy);
-            radarCtx.moveTo(cx, cy - radius);
-            radarCtx.lineTo(cx, cy + radius);
+            radarCtx.moveTo(cx - radius, cy); radarCtx.lineTo(cx + radius, cy);
+            radarCtx.moveTo(cx, cy - radius); radarCtx.lineTo(cx, cy + radius);
             radarCtx.stroke();
 
+            // 30-degree spokes
             radarCtx.save();
-            radarCtx.strokeStyle = 'rgba(253, 255, 240, 0.05)';
-            const diag = radius * 0.7071;
-            radarCtx.beginPath();
-            radarCtx.moveTo(cx - diag, cy - diag);
-            radarCtx.lineTo(cx + diag, cy + diag);
-            radarCtx.moveTo(cx - diag, cy + diag);
-            radarCtx.lineTo(cx + diag, cy - diag);
-            radarCtx.stroke();
+            radarCtx.strokeStyle = 'rgba(253, 255, 240, 0.04)';
+            for (let deg = 30; deg < 360; deg += 30) {
+                if (deg % 90 === 0) continue;
+                const rad = (deg * Math.PI) / 180;
+                radarCtx.beginPath();
+                radarCtx.moveTo(cx, cy);
+                radarCtx.lineTo(cx + Math.cos(rad) * radius, cy + Math.sin(rad) * radius);
+                radarCtx.stroke();
+            }
             radarCtx.restore();
 
-            // Azimuth Compass Markings
+            // 3. Azimuth Compass Markings (000°, 090°, 180°, 270°)
             radarCtx.font = '8px Inter, sans-serif';
-            radarCtx.fillStyle = 'rgba(253, 255, 240, 0.4)';
+            radarCtx.fillStyle = 'rgba(253, 255, 240, 0.40)';
             radarCtx.textAlign = 'center';
             radarCtx.textBaseline = 'bottom';
-            radarCtx.fillText('000° (N)', cx, cy - radius - 4);
+            radarCtx.fillText('000° (N)', cx, cy - radius - 5);
             radarCtx.textBaseline = 'top';
-            radarCtx.fillText('180° (S)', cx, cy + radius + 4);
+            radarCtx.fillText('180° (S)', cx, cy + radius + 5);
             radarCtx.textAlign = 'right';
             radarCtx.textBaseline = 'middle';
-            radarCtx.fillText('270° (W)', cx - radius - 6, cy);
+            radarCtx.fillText('270° (W)', cx - radius - 8, cy);
             radarCtx.textAlign = 'left';
-            radarCtx.fillText('090° (E)', cx + radius + 6, cy);
+            radarCtx.fillText('090° (E)', cx + radius + 8, cy);
 
-            // Radar Sweep: 360 degree rotation with subtle gradient from --color-status to transparent
+            // Ring Range Labels in Upper Right Quadrant
+            radarCtx.font = '7px Inter, sans-serif';
+            radarCtx.fillStyle = 'rgba(253, 255, 240, 0.25)';
+            radarCtx.textAlign = 'left';
+            radarCtx.fillText('R1: CORE', cx + 6, cy - radius * 0.33 + 10);
+            radarCtx.fillText('R2: CANARY PERIMETER', cx + 6, cy - radius * 0.66 + 10);
+            radarCtx.fillText('R3: VFS BOUNDARY', cx + 6, cy - radius + 10);
+
+            // 4. Sweep Beam (360 Degree Continuous PPI Rotation)
             radarAngle = (radarAngle + 1.25 * dt) % (Math.PI * 2);
 
-            const sweepArc = 0.55;
+            const sweepArc = 0.65;
             radarCtx.save();
             radarCtx.beginPath();
             radarCtx.moveTo(cx, cy);
@@ -1156,8 +1229,8 @@ events         : RINGBUF (2 MB memory ring)</div>
             radarCtx.closePath();
 
             const sweepGrad = radarCtx.createRadialGradient(cx, cy, 0, cx, cy, radius);
-            sweepGrad.addColorStop(0, 'rgba(0, 176, 147, 0.18)');
-            sweepGrad.addColorStop(0.8, 'rgba(0, 176, 147, 0.06)');
+            sweepGrad.addColorStop(0, 'rgba(0, 176, 147, 0.22)');
+            sweepGrad.addColorStop(0.7, 'rgba(0, 176, 147, 0.08)');
             sweepGrad.addColorStop(1, 'rgba(0, 176, 147, 0.0)');
             radarCtx.fillStyle = sweepGrad;
             radarCtx.fill();
@@ -1165,77 +1238,167 @@ events         : RINGBUF (2 MB memory ring)</div>
             // Leading hairline sweep edge
             radarCtx.beginPath();
             radarCtx.moveTo(cx, cy);
-            radarCtx.lineTo(cx + Math.cos(radarAngle) * radius, cy + Math.sin(radarAngle) * radius);
-            radarCtx.strokeStyle = 'rgba(0, 176, 147, 0.75)';
-            radarCtx.lineWidth = 1.25;
+            const edgeX = cx + Math.cos(radarAngle) * radius;
+            const edgeY = cy + Math.sin(radarAngle) * radius;
+            radarCtx.lineTo(edgeX, edgeY);
+            radarCtx.strokeStyle = 'rgba(0, 176, 147, 0.85)';
+            radarCtx.lineWidth = 1.35;
             radarCtx.stroke();
+
+            // Sweep Tip Glow Dot
+            radarCtx.beginPath();
+            radarCtx.arc(edgeX, edgeY, 2.5, 0, Math.PI * 2);
+            radarCtx.fillStyle = '#00b093';
+            radarCtx.fill();
             radarCtx.restore();
 
-            // Center LSM Core Indicator
+            // 5. Center Hub: LSM Kernel Core
+            radarCtx.beginPath();
+            radarCtx.arc(cx, cy, 14, 0, Math.PI * 2);
+            radarCtx.strokeStyle = 'rgba(0, 176, 147, 0.35)';
+            radarCtx.lineWidth = 1;
+            radarCtx.stroke();
+
             radarCtx.beginPath();
             radarCtx.arc(cx, cy, 4, 0, Math.PI * 2);
             radarCtx.fillStyle = '#00b093';
             radarCtx.fill();
 
             radarCtx.font = '8px Inter, sans-serif';
-            radarCtx.fillStyle = 'rgba(253, 255, 240, 0.4)';
+            radarCtx.fillStyle = 'rgba(0, 176, 147, 0.75)';
             radarCtx.textAlign = 'center';
             radarCtx.textBaseline = 'top';
-            radarCtx.fillText('LSM Core', cx, cy + 8);
+            radarCtx.fillText('LSM CORE', cx, cy + 16);
 
-            // Active Canaries
+            // Real-time Tactical Azimuth Readout at top-left
+            const azDeg = (radarAngle * 180 / Math.PI).toFixed(1);
+            radarCtx.font = '8px Inter, sans-serif';
+            radarCtx.fillStyle = 'rgba(253, 255, 240, 0.40)';
+            radarCtx.textAlign = 'left';
+            radarCtx.textBaseline = 'top';
+            radarCtx.fillText(`AZ: ${azDeg}° | SCAN: 1.25 rad/s`, 12, 10);
+
+            // 6. Decoy Canaries (Blips & Breach Auto-Rearm Tracking)
+            let anyCanaryTripped = false;
+
             canaryPoints.forEach(pt => {
                 const px = cx + Math.cos(pt.angle) * (radius * pt.dist);
                 const py = cy + Math.sin(pt.angle) * (radius * pt.dist);
 
                 let angleDiff = Math.abs(radarAngle - pt.angle);
                 if (angleDiff > Math.PI) angleDiff = 2 * Math.PI - angleDiff;
-                const isSwept = (angleDiff < 0.25);
+                const isSwept = (angleDiff < 0.20);
+
+                // Phosphor excitation decay
+                if (isSwept) {
+                    pt.phosphor = 1.0;
+                } else {
+                    pt.phosphor = Math.max(0, pt.phosphor - 1.8 * dt);
+                }
+
+                // Automatic Re-Arming: after 10s of breach once threat is neutralized and risk cooled down
+                if (pt.breached) {
+                    const elapsed = (now - pt.breachedAt) / 1000;
+                    if (elapsed > 10.0 && liveRisk < 25.0) {
+                        pt.breached = false;
+                        pt.breachedAt = 0;
+                    } else {
+                        anyCanaryTripped = true;
+                    }
+                }
 
                 if (pt.breached) {
                     const elapsed = (now - pt.breachedAt) / 1000;
-                    const pulseR = 5 + (elapsed % 1.5) * 16;
-                    const pulseAlpha = Math.max(0, 1.0 - (pulseR / 28));
+                    const pulseR = 5 + (elapsed % 1.5) * 18;
+                    const pulseAlpha = Math.max(0, 1.0 - (pulseR / 32));
 
-                    radarCtx.strokeStyle = 'rgba(232, 69, 60, ' + pulseAlpha.toFixed(2) + ')';
+                    // Dual expanding sonar alert waves
+                    radarCtx.strokeStyle = `rgba(232, 69, 60, ${pulseAlpha.toFixed(2)})`;
                     radarCtx.lineWidth = 1;
                     radarCtx.beginPath();
                     radarCtx.arc(px, py, pulseR, 0, Math.PI * 2);
                     radarCtx.stroke();
 
-                    // Tactical acquisition brackets [ ]
+                    // Tactical intercept vector from LSM Core to breached decoy
+                    radarCtx.save();
+                    radarCtx.setLineDash([2, 3]);
+                    radarCtx.strokeStyle = 'rgba(232, 69, 60, 0.40)';
+                    radarCtx.lineWidth = 1;
+                    radarCtx.beginPath();
+                    radarCtx.moveTo(cx, cy);
+                    radarCtx.lineTo(px, py);
+                    radarCtx.stroke();
+                    radarCtx.restore();
+
+                    // Target Acquisition Brackets [ ! ]
                     radarCtx.strokeStyle = '#e8453c';
                     radarCtx.lineWidth = 1.25;
-                    const brSize = 7;
+                    const brSize = 8;
                     radarCtx.beginPath();
-                    radarCtx.moveTo(px - brSize + 2, py - brSize);
+                    // Top-left
+                    radarCtx.moveTo(px - brSize + 3, py - brSize);
                     radarCtx.lineTo(px - brSize, py - brSize);
-                    radarCtx.lineTo(px - brSize, py + brSize);
-                    radarCtx.lineTo(px - brSize + 2, py + brSize);
-                    radarCtx.moveTo(px + brSize - 2, py - brSize);
+                    radarCtx.lineTo(px - brSize, py - brSize + 3);
+                    // Top-right
+                    radarCtx.moveTo(px + brSize - 3, py - brSize);
                     radarCtx.lineTo(px + brSize, py - brSize);
+                    radarCtx.lineTo(px + brSize, py - brSize + 3);
+                    // Bottom-left
+                    radarCtx.moveTo(px - brSize + 3, py + brSize);
+                    radarCtx.lineTo(px - brSize, py + brSize);
+                    radarCtx.lineTo(px - brSize, py + brSize - 3);
+                    // Bottom-right
+                    radarCtx.moveTo(px + brSize - 3, py + brSize);
                     radarCtx.lineTo(px + brSize, py + brSize);
-                    radarCtx.lineTo(px + brSize - 2, py + brSize);
+                    radarCtx.lineTo(px + brSize, py + brSize - 3);
                     radarCtx.stroke();
 
+                    // Alert Blip Core
                     radarCtx.beginPath();
                     radarCtx.arc(px, py, 4.5, 0, Math.PI * 2);
                     radarCtx.fillStyle = '#e8453c';
                     radarCtx.fill();
-                } else {
-                    radarCtx.beginPath();
-                    radarCtx.arc(px, py, isSwept ? 4.5 : 3.5, 0, Math.PI * 2);
-                    radarCtx.fillStyle = isSwept ? '#fdfff0' : '#00b093';
-                    radarCtx.fill();
-                }
 
-                radarCtx.font = '10px Inter, sans-serif';
-                radarCtx.fillStyle = pt.breached ? '#e8453c' : 'rgba(253, 255, 240, 0.72)';
-                radarCtx.textAlign = 'left';
-                radarCtx.textBaseline = 'middle';
-                const labelText = pt.breached ? pt.name + ' [Tripped]' : pt.name;
-                radarCtx.fillText(labelText, px + 10, py);
+                    // Warning Text Label
+                    radarCtx.font = '9px Inter, sans-serif';
+                    radarCtx.fillStyle = '#e8453c';
+                    radarCtx.textAlign = 'left';
+                    radarCtx.textBaseline = 'middle';
+                    radarCtx.fillText(`${pt.name} [TRIPPED]`, px + 12, py);
+                } else {
+                    // Safe / Armed Decoy Blip
+                    const glowAlpha = 0.35 + 0.65 * pt.phosphor;
+                    radarCtx.beginPath();
+                    radarCtx.arc(px, py, 3.5, 0, Math.PI * 2);
+                    radarCtx.fillStyle = isSwept ? '#fdfff0' : `rgba(0, 176, 147, ${glowAlpha.toFixed(2)})`;
+                    radarCtx.fill();
+
+                    // Corner tick brackets on safe blips
+                    radarCtx.strokeStyle = 'rgba(0, 176, 147, 0.45)';
+                    radarCtx.lineWidth = 1;
+                    const bSize = 6;
+                    radarCtx.beginPath();
+                    radarCtx.moveTo(px - bSize, py - 2); radarCtx.lineTo(px - bSize, py - bSize); radarCtx.lineTo(px - 2, py - bSize);
+                    radarCtx.moveTo(px + bSize, py + 2); radarCtx.lineTo(px + bSize, py + bSize); radarCtx.lineTo(px + 2, py + bSize);
+                    radarCtx.stroke();
+
+                    // Armed Label
+                    radarCtx.font = '9px Inter, sans-serif';
+                    radarCtx.fillStyle = 'rgba(253, 255, 240, 0.65)';
+                    radarCtx.textAlign = 'left';
+                    radarCtx.textBaseline = 'middle';
+                    radarCtx.fillText(`${pt.name} [ARMED]`, px + 10, py);
+                }
             });
+
+            // Auto-rearm badge restoration: if no canaries remain tripped, restore "5 decoys armed"
+            if (!anyCanaryTripped) {
+                const radarBadge = document.getElementById("radarStatusBadge");
+                if (radarBadge && radarBadge.style.color !== 'var(--color-status)') {
+                    radarBadge.innerHTML = '<span style="width: 6px; height: 6px; border-radius: 50%; background: var(--color-status);"></span> 5 decoys armed';
+                    radarBadge.style.color = 'var(--color-status)';
+                }
+            }
 
             requestAnimationFrame(drawRadar);
         }
@@ -1364,7 +1527,7 @@ events         : RINGBUF (2 MB memory ring)</div>
         }
 
         // Live Event Handlers
-        function addTelemetryRow(e) {
+        function addTelemetryRow(e, isLive = true) {
             if (!e) return;
             eventCount++;
             const ec = document.getElementById("eventCounter");
@@ -1394,20 +1557,22 @@ events         : RINGBUF (2 MB memory ring)</div>
             if (e.type === "CANARY_BREACH") {
                 tagClass = "tag-canary";
                 actionDesc = "Decoy tripped (+40.0 risk penalty)";
-                const pipeCanary = document.getElementById("pipe-canary");
-                if (pipeCanary) {
-                    pipeCanary.classList.add("danger");
-                    setTimeout(() => pipeCanary.classList.remove("danger"), 2500);
-                }
-                if (canaryPoints) {
-                    const targetCanary = canaryPoints.find(c => !c.breached) || canaryPoints[0];
-                    targetCanary.breached = true;
-                    targetCanary.breachedAt = performance.now();
-                    const breachedCount = canaryPoints.filter(c => c.breached).length;
-                    const radarBadge = document.getElementById("radarStatusBadge");
-                    if (radarBadge) {
-                        radarBadge.innerHTML = `<span style="width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent);"></span> ${breachedCount} decoy${breachedCount > 1 ? 's' : ''} tampered`;
-                        radarBadge.style.color = 'var(--color-accent)';
+                if (isLive) {
+                    const pipeCanary = document.getElementById("pipe-canary");
+                    if (pipeCanary) {
+                        pipeCanary.classList.add("danger");
+                        setTimeout(() => pipeCanary.classList.remove("danger"), 2500);
+                    }
+                    if (canaryPoints) {
+                        const targetCanary = canaryPoints.find(c => !c.breached) || canaryPoints[0];
+                        targetCanary.breached = true;
+                        targetCanary.breachedAt = performance.now();
+                        const breachedCount = canaryPoints.filter(c => c.breached).length;
+                        const radarBadge = document.getElementById("radarStatusBadge");
+                        if (radarBadge) {
+                            radarBadge.innerHTML = `<span style="width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent);"></span> ${breachedCount} decoy${breachedCount > 1 ? 's' : ''} tampered`;
+                            radarBadge.style.color = 'var(--color-accent)';
+                        }
                     }
                 }
             } else if (e.type === "KILL_DECISION") {
@@ -1416,27 +1581,29 @@ events         : RINGBUF (2 MB memory ring)</div>
                 killCount++;
                 const mk = document.getElementById("metricKills");
                 if (mk) mk.innerText = killCount;
-                const pipeEnforce = document.getElementById("pipe-enforce");
-                const pipeLockdown = document.getElementById("pipe-lockdown");
-                if (pipeEnforce) pipeEnforce.classList.add("danger");
-                if (pipeLockdown) pipeLockdown.classList.add("danger");
-                if (canaryPoints) {
-                    canaryPoints.slice(0, 2).forEach(c => {
-                        if (!c.breached) {
-                            c.breached = true;
-                            c.breachedAt = performance.now();
-                        }
-                    });
+                if (isLive) {
+                    const pipeEnforce = document.getElementById("pipe-enforce");
+                    const pipeLockdown = document.getElementById("pipe-lockdown");
+                    if (pipeEnforce) pipeEnforce.classList.add("danger");
+                    if (pipeLockdown) pipeLockdown.classList.add("danger");
+                    if (canaryPoints) {
+                        canaryPoints.slice(0, 2).forEach(c => {
+                            if (!c.breached) {
+                                c.breached = true;
+                                c.breachedAt = performance.now();
+                            }
+                        });
+                    }
+                    const radarBadge = document.getElementById("radarStatusBadge");
+                    if (radarBadge) {
+                        radarBadge.innerHTML = '<span style="width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent);"></span> Decoys quarantined';
+                        radarBadge.style.color = 'var(--color-accent)';
+                    }
+                    setTimeout(() => {
+                        if (pipeEnforce) pipeEnforce.classList.remove("danger");
+                        if (pipeLockdown) pipeLockdown.classList.remove("danger");
+                    }, 3500);
                 }
-                const radarBadge = document.getElementById("radarStatusBadge");
-                if (radarBadge) {
-                    radarBadge.innerHTML = '<span style="width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent);"></span> Decoys quarantined';
-                    radarBadge.style.color = 'var(--color-accent)';
-                }
-                setTimeout(() => {
-                    if (pipeEnforce) pipeEnforce.classList.remove("danger");
-                    if (pipeLockdown) pipeLockdown.classList.remove("danger");
-                }, 3500);
             } else if (e.type === "WRITE_SAMPLE") {
                 actionDesc = (safeEntropy >= 7.80) ? "High-entropy write flagged" : "Normal write inspected";
                 const pipeEntropy = document.getElementById("pipe-entropy");
@@ -1463,16 +1630,19 @@ events         : RINGBUF (2 MB memory ring)</div>
                 }
             }
 
-            // Update oscilloscope live targets
-            targetEntropy = safeEntropy;
+            // Update peak entropy recorded
             if (safeEntropy > peakEntropy) {
                 peakEntropy = safeEntropy;
                 const me = document.getElementById("metricEntropy");
                 if (me) me.innerText = peakEntropy.toFixed(2);
             }
 
-            targetRisk = safeRisk;
-            currentRisk = safeRisk;
+            // Only drive live oscilloscope targets on fresh real-time events
+            if (isLive) {
+                targetEntropy = safeEntropy;
+                targetRisk = safeRisk;
+                currentRisk = safeRisk;
+            }
             const mr = document.getElementById("metricRisk");
             if (mr) mr.innerText = currentRisk.toFixed(1);
             const rsn = document.getElementById("riskScoreNum");
@@ -1693,7 +1863,7 @@ events         : RINGBUF (2 MB memory ring)</div>
                 try {
                     const data = JSON.parse(event.data);
                     if (data.type !== "HANDSHAKE") {
-                        addTelemetryRow(data);
+                        addTelemetryRow(data, true);
                     }
                 } catch(err) {}
             };
@@ -1709,7 +1879,8 @@ events         : RINGBUF (2 MB memory ring)</div>
                 .then(r => r.json())
                 .then(data => {
                     if (data.events && Array.isArray(data.events)) {
-                        data.events.forEach(e => addTelemetryRow(e));
+                        // Pass isLive = false so historical events populate table without triggering live alarms
+                        data.events.forEach(e => addTelemetryRow(e, false));
                     }
                 })
                 .catch(() => {});
