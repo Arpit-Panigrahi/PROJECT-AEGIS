@@ -13,7 +13,9 @@ def check_html():
         ("Process State Machine", 'id="currentTierBadge"'),
         ("Live Telemetry Stream", 'id="telemetryTable"'),
         ("Forensic Hex Modal", 'id="forensicModal"'),
-        ("Benchmark & Architecture Tabs", 'id="tab-benchmark"')
+        ("Benchmark & Architecture Tabs", 'id="tab-benchmark"'),
+        ("Presentation Mode Button", 'id="tourBtn"'),
+        ("Architecture Walkthrough Drawer", 'id="presenterDrawer"')
     ]
 
     print("=== Checking index.html UI Requirements ===")

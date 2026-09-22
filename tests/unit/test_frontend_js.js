@@ -251,5 +251,25 @@ assert.doesNotThrow(() => {
 }, "loadForensicSample should execute cleanly");
 console.log("[PASS] Button Handler 'loadForensicSample()' executed without error.");
 
+// 9.7 togglePresenterTour
+assert.doesNotThrow(() => {
+    sandbox.togglePresenterTour(); // Open
+    const drawer = mockDOM.getElementById("presenterDrawer");
+    assert.strictEqual(drawer.style.display, "block");
+    sandbox.togglePresenterTour(); // Close
+    assert.strictEqual(drawer.style.display, "none");
+}, "togglePresenterTour() should execute cleanly");
+console.log("[PASS] Button Handler 'togglePresenterTour()' executed without error.");
+
+// 9.8 Tour navigation: nextTourStep, prevTourStep, executeTourAction
+assert.doesNotThrow(() => {
+    sandbox.togglePresenterTour(); // Open tour
+    sandbox.nextTourStep();
+    sandbox.prevTourStep();
+    sandbox.executeTourAction();
+    sandbox.togglePresenterTour(); // Close tour
+}, "Tour navigation and action functions should execute cleanly");
+console.log("[PASS] Button Handlers 'nextTourStep()', 'prevTourStep()', and 'executeTourAction()' executed without error.");
+
 console.log("\n=== ALL FRONTEND RUNTIME JAVASCRIPT & BUTTON TESTS PASSED (100% OPERATIONAL)! ===");
 

@@ -17,6 +17,11 @@ print("=== CHECK 1: Verifying All Operational Function Handlers in JavaScript ==
 required_functions = [
     "toggleMode",
     "toggleAgent",
+    "togglePresenterTour",
+    "renderTourStep",
+    "nextTourStep",
+    "prevTourStep",
+    "executeTourAction",
     "triggerAction",
     "switchTab",
     "closeModal",
@@ -103,7 +108,7 @@ for act in sim_actions:
         print(f"[FAIL] Simulation button for action '{act}' MISSING!")
         all_sims_ok = False
 
-header_controls = ["modeBtn", "agentToggleBtn", "statusBadge"]
+header_controls = ["modeBtn", "agentToggleBtn", "statusBadge", "tourBtn"]
 for ctrl in header_controls:
     el = soup.find(id=ctrl)
     if el:
@@ -112,8 +117,28 @@ for ctrl in header_controls:
         print(f"[FAIL] Header control '#{ctrl}' MISSING!")
         all_sims_ok = False
 
+print("\n=== CHECK 6: Verifying Presentation Mode Walkthrough Controls & Data Elements ===")
+tour_drawer = soup.find(id="presenterDrawer")
+tour_elements = [
+    "tourStepNum", "tourStepTotal", "tourTitleMain", "tourTitleSub",
+    "tourFocusDesc", "tourScriptText", "tourTechText", "tourActionBtn",
+    "tourPrevBtn", "tourNextBtn"
+]
+all_tour_ok = True
+if tour_drawer:
+    print("[PASS] Tour Drawer '#presenterDrawer' exists in DOM")
+    for el_id in tour_elements:
+        if soup.find(id=el_id):
+            print(f"[PASS] Tour child '#{el_id}' exists")
+        else:
+            print(f"[FAIL] Tour child '#{el_id}' MISSING!")
+            all_tour_ok = False
+else:
+    print("[FAIL] Tour Drawer '#presenterDrawer' MISSING!")
+    all_tour_ok = False
+
 print("\n=== SUMMARY ===")
-if all_funcs_ok and all_links_ok and all_tabs_ok and all_modal_ok and all_sims_ok:
+if all_funcs_ok and all_links_ok and all_tabs_ok and all_modal_ok and all_sims_ok and all_tour_ok:
     print("[SUCCESS] ALL BUTTONS, HANDLERS, LINKS, AND DOM TARGETS ARE 100% VALIDATED!")
     sys.exit(0)
 else:
