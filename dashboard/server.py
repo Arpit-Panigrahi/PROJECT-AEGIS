@@ -429,11 +429,10 @@ class DashboardHandler(BaseHTTPRequestHandler):
                 pass
 
             # Create standalone attack script that mimics rapid ransomware encryption
-            temp_dir = tempfile.gettempdir()
-            attack_script = os.path.join(temp_dir, "victim_encryptor_sim.sh")
             try:
-                with open(attack_script, "w", newline="\n") as f:
-                    f.write("""#!/usr/bin/env bash
+                tf = tempfile.NamedTemporaryFile(mode="w", suffix=".sh", delete=False, newline="\n")
+                attack_script = tf.name
+                tf.write("""#!/usr/bin/env bash
 echo "[ATTACK] Process $$ attempting rapid multi-file encryption..."
 # 1. Hit canary 1 (+40 risk)
 echo "ENCRYPT_PAYLOAD_CANARY_1" >> "/tmp/aegis_canaries/!00_SystemConfig.docx" 2>/dev/null || true
@@ -447,6 +446,7 @@ for i in {1..20}; do
     sleep 0.02
 done
 """)
+                tf.close()
                 try:
                     os.chmod(attack_script, 0o755)
                 except Exception:
@@ -495,14 +495,10 @@ done
                 start_aegis("monitor")
                 time.sleep(1)
 
-            stream_path = "/tmp/high_entropy_stream.bin"
             try:
-                # Remove stale file if exists to prevent ownership conflicts
-                if os.path.exists(stream_path):
-                    try:
-                        os.remove(stream_path)
-                    except Exception:
-                        pass
+                tf = tempfile.NamedTemporaryFile(delete=False, suffix=".bin")
+                stream_path = tf.name
+                tf.close()
 
                 # Write 32 blocks of 4096 random bytes across multiple writes to trigger sampling
                 with open(stream_path, "wb") as f:
@@ -515,16 +511,7 @@ done
                     "message": "Wrote 32x 4096-byte high-entropy blocks (131,072 B) via kernel write()"
                 }
             except Exception as e:
-                # Fallback via external python3 process if permission issues arise
-                try:
-                    cmd = ["python3", "-c", f"import os; f=open('{stream_path}', 'wb'); [f.write(os.urandom(4096)) for _ in range(32)]; f.close()"]
-                    subprocess.run(cmd, check=True)
-                    return {
-                        "success": True,
-                        "message": "Wrote 32x 4096-byte high-entropy blocks via external process"
-                    }
-                except Exception as inner_e:
-                    return {"success": False, "error": f"Entropy simulation failed: {str(inner_e)}"}
+                return {"success": False, "error": f"Entropy simulation failed: {str(e)}"}
 
         elif action == "clear_logs":
             cleared = []
