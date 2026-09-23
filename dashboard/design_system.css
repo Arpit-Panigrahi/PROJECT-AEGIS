@@ -2672,3 +2672,47 @@ body.presenter-drawer-open {
   }
 }
 
+/* =============================================================================
+   15. MATHEMATICAL TYPOGRAPHY & KATEX INTEGRATION
+   ============================================================================= */
+
+.math-formula-box {
+  background: var(--color-surface-sunken);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-inner);
+  padding: 1.25rem 1.5rem;
+  margin: 1rem 0;
+  text-align: center;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+  font-size: 1.05rem;
+  color: var(--color-fg);
+  overflow-x: auto;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
+  position: relative;
+}
+
+.math-formula-box .katex-display {
+  margin: 0.5rem 0 !important;
+  color: var(--color-fg) !important;
+}
+
+.math-formula-box .katex {
+  font-size: 1.15em !important;
+  color: #fdfff0 !important;
+}
+
+.math-caption {
+  margin-top: 0.75rem;
+  font-family: var(--font-body, "Inter", sans-serif);
+  font-size: 0.78rem;
+  color: var(--color-muted);
+  line-height: 1.45;
+  text-align: center;
+}
+
+.math-caption .katex {
+  font-size: 0.95em !important;
+  color: var(--color-status) !important;
+}
+
+

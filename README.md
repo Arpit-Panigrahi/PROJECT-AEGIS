@@ -28,7 +28,7 @@ Project Aegis delivers proactive, kernel-enforced ransomware defense combining e
         └── Sample Payload Window (256-512 Bytes)
      ② In-Kernel Math Engine: Fixed-Point Q16.16 Shannon Entropy
         ├── 256-Bin Frequency Histogram
-        └── $H(X) = -\sum p(x) \log_2 p(x)$ via Taylor Polynomial
+        └── H(X) = -∑ p(x) log₂(p(x)) via Fixed-Point Table & Bias Correction
      ③ Sliding Window Rate & Risk Accumulator
         ├── Rapid File Modification Velocity Tracking
         └── Honeypot / Canary Directory Trapwire Cross-Check
@@ -70,13 +70,13 @@ Calculated via integer fixed-point arithmetic (Q16.16) and a customized Taylor S
 
 ### 2. Microsecond Detect-then-Deny Pipeline
 When an adversarial process initiates rapid file overwrites:
-1. `sys_enter_write` samples payload buffers and records high-entropy output ($> 7.2$ bits).
-2. Risk score surges past safety thresholds ($R > 75.0$).
+1. `sys_enter_write` samples payload buffers and records high-entropy output (> 7.2 bits).
+2. Risk score surges past safety thresholds (R ≥ 75.0).
 3. Aegis invokes `bpf_send_signal(SIGKILL)` to terminate the PID immediately.
 4. Concurrently, target inodes are flagged in an eBPF hash map, causing `lsm/file_open` and write hooks to return `-EPERM` to prevent lingering threads from corrupting data.
 
 ### 3. Decoy Canary Trapwire Subsystem
-Aegis deploys decoy canary files across high-value directories (`/tmp/aegis_canaries`). Any tampering, modification, or truncation targeting a canary immediately scores $+40.0$ on the threat vector, causing instant kill before user documents can be compromised.
+Aegis deploys decoy canary files across high-value directories (`/tmp/aegis_canaries`). Any tampering, modification, or truncation targeting a canary immediately scores +40.0 on the threat vector, causing instant kill before user documents can be compromised.
 
 ### 4. Zero False-Positive Tolerance
 Distinguishes between legitimate bulk operations (e.g. `tar -czvf`, compressed archives) and ransomware encryptors through dual-metric cross-validation (entropy + write frequency + file-extension diversity + canary tripwires).
@@ -86,7 +86,7 @@ Distinguishes between legitimate bulk operations (e.g. `tar -czvf`, compressed a
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Linux Kernel $\ge 5.15$ with `CONFIG_BPF=y`, `CONFIG_BPF_LSM=y`, and BTF support (`/sys/kernel/btf/vmlinux`).
+- Linux Kernel ≥ 5.15 with `CONFIG_BPF=y`, `CONFIG_BPF_LSM=y`, and BTF support (`/sys/kernel/btf/vmlinux`).
 - Windows WSL2 (Ubuntu / Fedora / Debian) or native Linux.
 - Packages: `clang`, `llvm`, `libbpf-devel` (or `libbpf-dev`), `make`, `gcc`, `python3`.
 
@@ -124,11 +124,11 @@ http://localhost:8080
 The Aegis dashboard provides an intuitive, high-tech interface for security operators and incident responders:
 
 - **60 FPS Real-Time Oscilloscope**: Continuous visual stream of kernel I/O risk and entropy variance.
-- **256-Bin Entropy Spectrum**: Real-time distribution showing plain text ($3.5 - 4.8$ bits) vs. AES/ChaCha20 encrypted ciphertext ($7.9+$ bits).
+- **256-Bin Entropy Spectrum**: Real-time distribution showing plain text (3.5 – 4.8 bits) vs. AES/ChaCha20 encrypted ciphertext (7.9+ bits).
 - **360° Multi-Vector Threat Radar**: Visualizes multi-factor telemetry across Entropy, Velocity, Canary hits, and Process Risk.
 - **Live Simulation Suite**: Trigger benign workloads, high-entropy writes, canary tripwires, or live encryptor kills with a single click.
 - **Forensic Hex Inspector**: Deep-dive into sampled buffers with automated high-entropy byte highlighting.
-- **Interactive Presentation Mode**: Guided 5-step walkthrough explaining in-kernel mechanisms step-by-step.
+- **Architecture Briefing Suite**: Comprehensive 6-module technical walkthrough explaining in-kernel mechanisms step-by-step.
 
 ---
 
@@ -151,10 +151,10 @@ sudo ./tools/run_full_evaluation.sh
 ```
 
 ### Benchmark Results
-- **Entropy Calculation Latency**: $\le 2.1\,\mu\text{s}$ per 512-byte sample in kernel space.
-- **Kill Latency**: $< 15\,\mu\text{s}$ from initial malicious write to `SIGKILL` delivery.
-- **Differential Divergence**: $< 0.019$ bits divergence between fixed-point Q16.16 eBPF and IEEE-754 64-bit float math.
-- **Detection Accuracy**: $100\%$ detection of mock ransomware encryptors with zero unhandled file encryptions.
+- **Entropy Calculation Latency**: ≤ 2.1 µs per 512-byte sample in kernel space.
+- **Kill Latency**: < 15 µs from initial malicious write to `SIGKILL` delivery.
+- **Differential Divergence**: < 0.019 bits divergence between fixed-point Q16.16 eBPF and IEEE-754 64-bit float math.
+- **Detection Accuracy**: 100% detection of mock ransomware encryptors with zero unhandled file encryptions.
 
 ---
 

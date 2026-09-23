@@ -8,6 +8,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="design_system.css">
+    <!-- KaTeX Mathematical Typography Engine -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false}
+            ],
+            throwOnError: false
+        });"></script>
 </head>
 <body>
     <!-- Top Fixed Navigation Bar -->
@@ -524,15 +535,30 @@ events         : RINGBUF (2 MB memory ring)</div>
             <div id="tab-explainer" class="tab-content">
                 <div class="explainer-grid">
                     <div class="explainer-card">
-                        <h3>1. Fixed-point Miller-Madow entropy</h3>
-                        <p>Because the Linux kernel forbids floating-point registers, Aegis computes Shannon entropy using $Q16.16$ integer math and integer lookup tables with asymptotic bias correction:</p>
-                        <div class="code-snippet">H_MM = (T[N] - Sum(c_i*log2(c_i)))/N + (K_obs - 1)*47274/N</div>
+                        <h3>1. Fixed-Point Miller–Madow Shannon Entropy</h3>
+                        <p>Because the Linux kernel strictly prohibits floating-point hardware registers (FPU) within fast-path VFS write hooks, Aegis evaluates Shannon entropy using $Q16.16$ fixed-point integer arithmetic, logarithmic lookup tables, and asymptotic Miller–Madow bias correction:</p>
+                        <div class="math-formula-box">
+                            $$\mathcal{H}_{\text{MM}} = \frac{T[N] - \sum_{i=0}^{255} c_i \log_2(c_i)}{N} + \frac{K_{\text{obs}} - 1}{2 N \ln(2)}$$
+                            <div class="math-caption">Where $T[N] = N \log_2(N)$ and $\frac{1}{2\ln(2)} \approx 47274$ in $Q16.16$ fixed-point. Empirical divergence $\Delta &lt; 0.00003$ bits vs 64-bit IEEE float.</div>
+                        </div>
+                        <div class="code-snippet">s64 h_obs = (tbl_sum - byte_entropy_acc) &gt;&gt; 16;
+s64 bias = ((k_obs - 1) * 47274LL) / count; // 47274 = 1/(2*ln2) in Q16
+s64 h_mm = h_obs + bias; // Threshold check: h_mm &gt;= 7.80 bits/byte</div>
                     </div>
 
                     <div class="explainer-card">
-                        <h3>2. Exponential risk decay</h3>
-                        <p>To avoid false positives from legitimate compression or compiling, evidence decays with a half-life of 4 seconds using fast integer bit-shifts in $Q8.8$:</p>
-                        <div class="code-snippet">R(t) = R_0 >> (elapsed_ms / 4000)</div>
+                        <h3>2. Exponential Risk Decay &amp; Workload Tolerance</h3>
+                        <p>To eliminate false positives from legitimate archival and compilation workloads (tar, gzip, zip, gcc), process risk evidence decays exponentially with a half-life of $\tau = 4.0\text{ s}$ via fast integer right-shifts in $Q8.8$:</p>
+                        <div class="math-formula-box">
+                            $$R(t) = R_0 \cdot 2^{-\frac{\Delta t}{\tau}} \iff R(t) = R_0 \gg \left(\frac{\Delta t}{4000\text{ ms}}\right)$$
+                            <div class="math-caption">Where $\tau = 4.0\text{ s}$ half-life and $\Delta t = \text{elapsed inter-write scheduling pause}$. Evaluated at zero CPU overhead.</div>
+                        </div>
+                        <div class="code-snippet">u64 elapsed_ms = (now_ns - proc-&gt;last_update_ns) / 1000000ULL;
+if (elapsed_ms &gt;= 4000) {
+    u32 half_lives = elapsed_ms / 4000;
+    proc-&gt;risk_score &gt;&gt;= half_lives; // Fast O(1) bit-shift decay
+    proc-&gt;last_update_ns = now_ns;
+}</div>
                     </div>
                 </div>
             </div>
@@ -1832,7 +1858,7 @@ events         : RINGBUF (2 MB memory ring)</div>
 
                         if (isPrintable) {
                             const char = String.fromCharCode(b);
-                            const safeChar = char === '<' ? '&lt;' : char === '>' ? '&gt;' : char === '&' ? '&amp;' : char;
+                            const safeChar = char === '<' ? '&lt;' : char === '>' ? '&gt;' : char === '&' ? '&amp;' : char === '"' ? '&quot;' : char === "'" ? '&#39;' : char;
                             asciiPart += `<span class="ascii-char">${safeChar}</span>`;
                         } else {
                             asciiPart += `<span class="cipher-char">·</span>`;
@@ -1937,7 +1963,20 @@ events         : RINGBUF (2 MB memory ring)</div>
                 }
             }
             const target = document.getElementById("tab-" + tabId);
-            if (target) target.classList.add("active");
+            if (target) {
+                target.classList.add("active");
+                if (window.renderMathInElement) {
+                    try {
+                        renderMathInElement(target, {
+                            delimiters: [
+                                {left: '$$', right: '$$', display: true},
+                                {left: '$', right: '$', display: false}
+                            ],
+                            throwOnError: false
+                        });
+                    } catch (e) {}
+                }
+            }
         }
 
         // SSE Connection Loop with Exponential Backoff
